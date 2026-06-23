@@ -9,22 +9,24 @@
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { background: #1c1d22; min-height: 100vh; -webkit-font-smoothing: antialiased; }
+  html, body { height: 100%; overflow: hidden; background: #1c1d22; -webkit-font-smoothing: antialiased; }
 
-  /* ── Canvas ──────────────────────────────────────────────────────────── */
-  .canvas { width: max-content; min-width: 100%; min-height: 100vh; padding: 52px 48px 64px; box-sizing: border-box; }
-  .page-title { font-family: 'Space Grotesk', sans-serif; color: #d8d9e0; font-size: 18px; font-weight: 600; letter-spacing: .4px; margin-bottom: 4px; }
-  .page-sub { font-family: 'JetBrains Mono', monospace; color: #6a6c7a; font-size: 12px; margin-bottom: 36px; }
+  /* ── Canvas — fills viewport, flex column ────────────────────────────── */
+  .canvas { height: 100vh; display: flex; flex-direction: column; padding: 20px 32px 16px; }
+  .canvas-head { flex-shrink: 0; }
+  .page-title { font-family: 'Space Grotesk', sans-serif; color: #d8d9e0; font-size: 16px; font-weight: 600; letter-spacing: .4px; margin-bottom: 2px; }
+  .page-sub { font-family: 'JetBrains Mono', monospace; color: #6a6c7a; font-size: 11px; margin-bottom: 12px; }
   .row { display: flex; align-items: flex-start; gap: 44px; }
   .frame { flex: none; width: 420px; }
   .label { font-family: 'Space Grotesk', sans-serif; color: #e6e7ee; font-size: 15px; font-weight: 600; letter-spacing: .3px; }
   .sub { font-family: 'JetBrains Mono', monospace; color: #6a6c7a; font-size: 11px; margin: 3px 0 16px; letter-spacing: .2px; }
-  .switcher { display: inline-flex; gap: 4px; padding: 4px; background: #131419; border: 1px solid #2b2d3a; border-radius: 10px; margin-bottom: 32px; }
-  .theme-btn { font-family: 'Space Grotesk', sans-serif; font-size: 12.5px; font-weight: 600; color: #8a8c9e; background: transparent; border: none; padding: 8px 16px; border-radius: 7px; cursor: pointer; transition: background .15s, color .15s; white-space: nowrap; }
+  .switcher { display: inline-flex; gap: 4px; padding: 4px; background: #131419; border: 1px solid #2b2d3a; border-radius: 10px; margin-bottom: 12px; }
+  .theme-btn { font-family: 'Space Grotesk', sans-serif; font-size: 12px; font-weight: 600; color: #8a8c9e; background: transparent; border: none; padding: 7px 14px; border-radius: 7px; cursor: pointer; transition: background .15s, color .15s; white-space: nowrap; }
   .theme-btn:hover { color: #d8d9e0; }
   .theme-btn.sel { background: #2a2c3a; color: #fff; }
   .theme-btn .swatch { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 7px; vertical-align: 1px; }
-  .stage { width: 420px; }
+  /* Stage fills whatever height is left; trainer is scaled to fit inside it */
+  .stage { flex: 1; min-height: 0; width: 420px; overflow: hidden; }
 
   /* ── Shared structure (theme-agnostic layout) ───────────────────────── */
   .trainer { width: 420px; border-radius: 8px; overflow: hidden; position: relative; }
@@ -322,9 +324,11 @@
 </head>
 <body>
 <div class="canvas">
-  <div class="page-title">Crimson Desert Trainer — Theme Switcher</div>
-  <div class="page-sub">pick a theme · live bars, toggles &amp; log are interactive</div>
-  <div class="switcher" id="switcher"></div>
+  <div class="canvas-head">
+    <div class="page-title">Crimson Desert Trainer — Theme Switcher</div>
+    <div class="page-sub">pick a theme · live bars, toggles &amp; log are interactive</div>
+    <div class="switcher" id="switcher"></div>
+  </div>
   <div class="stage" id="stage"></div>
 </div>
 
@@ -432,6 +436,25 @@ function buildWindow(d) {
   return win;
 }
 
+function fitTrainer() {
+  const trainer = stage.querySelector('.trainer');
+  if (!trainer) return;
+  // Reset any previous scale so we measure the natural height
+  trainer.style.transform = '';
+  trainer.style.transformOrigin = 'top left';
+  const trH = trainer.scrollHeight;
+  const availH = stage.clientHeight;
+  if (availH > 0 && trH > availH) {
+    const scale = availH / trH;
+    trainer.style.transform = 'scale(' + scale + ')';
+    // Collapse the dead space to the right of the scaled window
+    stage.style.width = Math.ceil(420 * scale) + 'px';
+  } else {
+    stage.style.width = '420px';
+  }
+}
+window.addEventListener('resize', fitTrainer);
+
 function selectTheme(d) {
   stage.innerHTML = '';
   const win = buildWindow(d);
@@ -439,6 +462,7 @@ function selectTheme(d) {
   initTrainer(win, d);
   switcher.querySelectorAll('.theme-btn').forEach(b => b.classList.toggle('sel', b.dataset.id === d.id));
   localStorage.setItem('cdt-theme', d.id);
+  fitTrainer();
 }
 
 DIRECTIONS.forEach((d, i) => {
