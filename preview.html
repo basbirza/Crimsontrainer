@@ -63,11 +63,16 @@
   .speed-val { font-size: 12px; font-weight: 700; width: 36px; flex-shrink: 0; text-align: right; }
   .speed-hk { font-size: 11px; min-width: 28px; text-align: right; }
   .tp { padding: 10px 12px; }
-  .live-pos { font-size: 10px; margin-bottom: 10px; letter-spacing: .3px; }
-  .tp-btns { display: flex; gap: 8px; margin-bottom: 8px; }
-  .save-btn, .tp-btn { flex: 1; padding: 8px 10px; font-size: 11.5px; font-weight: 600; border-radius: 4px; cursor: pointer; transition: background .12s; }
-  .saved { font-size: 10px; margin-bottom: 9px; }
-  .coords { display: flex; align-items: center; gap: 6px; }
+  .live-pos { font-size: 10px; margin-bottom: 8px; letter-spacing: .3px; }
+  /* ── Multi-slot rows ─────────────────────────────────────────────────── */
+  .slot-row { display: flex; align-items: center; gap: 6px; margin-bottom: 5px; }
+  .slot-letter { font-size: 11px; font-weight: 700; width: 14px; flex-shrink: 0; font-family: var(--mono, 'JetBrains Mono', monospace); }
+  .slot-name { width: 68px; flex-shrink: 0; padding: 3px 6px; font-size: 10.5px; border-radius: 3px; outline: none; border: 1px solid transparent; font-family: var(--mono, 'JetBrains Mono', monospace); }
+  .slot-save { padding: 3px 8px; font-size: 10.5px; font-weight: 600; border-radius: 3px; cursor: pointer; flex-shrink: 0; transition: background .12s; }
+  .slot-go   { padding: 3px 8px; font-size: 10.5px; font-weight: 700; border-radius: 3px; cursor: pointer; flex-shrink: 0; transition: background .12s; }
+  .slot-coords { font-size: 9.5px; flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-family: var(--mono, 'JetBrains Mono', monospace); }
+  /* ── Custom coords row ───────────────────────────────────────────────── */
+  .coords { display: flex; align-items: center; gap: 6px; margin-top: 4px; }
   .coords label { font-size: 11px; }
   .coords input { width: 70px; padding: 5px 6px; font-size: 11px; border-radius: 3px; outline: none; border: 1px solid transparent; }
   .go-btn { padding: 5px 11px; font-size: 11.5px; font-weight: 700; border-radius: 3px; cursor: pointer; margin-left: 2px; }
@@ -77,7 +82,7 @@
   .log .ts { opacity: .65; }
 
   /* mono helpers — applied per theme */
-  .ent-lbl, .stat-val, .hk, .speed-val, .speed-hk, .live-pos, .saved, .coords input, .log { font-family: var(--mono, 'JetBrains Mono', monospace); }
+  .ent-lbl, .stat-val, .hk, .speed-val, .speed-hk, .live-pos, .coords input, .log { font-family: var(--mono, 'JetBrains Mono', monospace); }
 
   /* ════════════════════════════════════════════════════════════════════ */
   /*  01 · MIDNIGHT FORGE — refined dark / crimson                          */
@@ -115,11 +120,14 @@
   .dir-forge .speed-val { color: #ff7a7e; }
   .dir-forge .tp { background: #14151d; border-bottom: 1px solid #24262f; }
   .dir-forge .live-pos { color: #5a7a5e; }
-  .dir-forge .save-btn { background: #16271a; color: #b6d6bc; border: 1px solid #2f5a38; }
-  .dir-forge .save-btn:hover { background: #1d3322; }
-  .dir-forge .tp-btn { background: #161a2e; color: #b6bce0; border: 1px solid #34406e; }
-  .dir-forge .tp-btn:hover { background: #1d2240; }
-  .dir-forge .saved { color: #5a9860; }
+  .dir-forge .slot-letter { color: #888aa0; }
+  .dir-forge .slot-name { background: #1a1c28; color: #cfd2e0; border-color: #34364a; }
+  .dir-forge .slot-name:focus { border-color: #c0303a; }
+  .dir-forge .slot-save { background: #16271a; color: #b6d6bc; border: 1px solid #2f5a38; }
+  .dir-forge .slot-save:hover { background: #1d3322; }
+  .dir-forge .slot-go  { background: #161a2e; color: #b6bce0; border: 1px solid #34406e; }
+  .dir-forge .slot-go:hover  { background: #1d2240; }
+  .dir-forge .slot-coords { color: #5a9860; }
   .dir-forge .coords label { color: #888aa0; }
   .dir-forge .coords input { background: #1a1c28; color: #cfd2e0; border-color: #34364a; }
   .dir-forge .coords input:focus { border-color: #c0303a; }
@@ -169,11 +177,14 @@
   .dir-atelier .speed-val { color: #12a06a; }
   .dir-atelier .tp { background: #fafafb; border-top: 1px solid #eeeef2; }
   .dir-atelier .live-pos { color: #6a6a76; }
-  .dir-atelier .save-btn { background: #e6f7ef; color: #0c6b46; border: 1px solid #b6e6cd; }
-  .dir-atelier .save-btn:hover { background: #d8f2e4; }
-  .dir-atelier .tp-btn { background: #eef2ff; color: #2952c8; border: 1px solid #c7d6ff; }
-  .dir-atelier .tp-btn:hover { background: #e2eaff; }
-  .dir-atelier .saved { color: #6a6a76; }
+  .dir-atelier .slot-letter { color: #9a9aa6; font-weight: 700; }
+  .dir-atelier .slot-name { background: #fff; color: #3a3b45; border-color: #e2e2ea; }
+  .dir-atelier .slot-name:focus { border-color: #12a06a; }
+  .dir-atelier .slot-save { background: #e6f7ef; color: #0c6b46; border: 1px solid #b6e6cd; border-radius: 6px; }
+  .dir-atelier .slot-save:hover { background: #d8f2e4; }
+  .dir-atelier .slot-go  { background: #eef2ff; color: #2952c8; border: 1px solid #c7d6ff; border-radius: 6px; }
+  .dir-atelier .slot-go:hover  { background: #e2eaff; }
+  .dir-atelier .slot-coords { color: #6a6a76; }
   .dir-atelier .coords label { color: #9a9aa6; font-weight: 600; }
   .dir-atelier .coords input { background: #fff; color: #3a3b45; border-color: #e2e2ea; }
   .dir-atelier .coords input:focus { border-color: #12a06a; }
@@ -225,11 +236,14 @@
   .dir-sandsworn .speed-val { color: #e0884a; }
   .dir-sandsworn .tp { background: #160f0d; border-bottom: 1px solid #2a1d16; }
   .dir-sandsworn .live-pos { color: #7a8a52; }
-  .dir-sandsworn .save-btn { background: #21301a; color: #b6c88a; border: 1px solid #3f5a28; }
-  .dir-sandsworn .save-btn:hover { background: #293c20; }
-  .dir-sandsworn .tp-btn { background: #2a1a14; color: #d8b878; border: 1px solid #5a4026; }
-  .dir-sandsworn .tp-btn:hover { background: #34221a; }
-  .dir-sandsworn .saved { color: #8aa060; }
+  .dir-sandsworn .slot-letter { color: #b09060; font-family: 'JetBrains Mono', monospace; }
+  .dir-sandsworn .slot-name { background: #1a120e; color: #d8c2a0; border-color: #43301f; font-family: 'JetBrains Mono', monospace; }
+  .dir-sandsworn .slot-name:focus { border-color: #c9a24b; }
+  .dir-sandsworn .slot-save { background: #21301a; color: #b6c88a; border: 1px solid #3f5a28; font-family: 'JetBrains Mono', monospace; font-size: 10px; }
+  .dir-sandsworn .slot-save:hover { background: #293c20; }
+  .dir-sandsworn .slot-go  { background: #2a1a14; color: #d8b878; border: 1px solid #5a4026; font-family: 'JetBrains Mono', monospace; font-size: 10px; }
+  .dir-sandsworn .slot-go:hover  { background: #34221a; }
+  .dir-sandsworn .slot-coords { color: #8aa060; font-family: 'JetBrains Mono', monospace; }
   .dir-sandsworn .coords label { color: #b09060; }
   .dir-sandsworn .coords input { background: #1a120e; color: #d8c2a0; border-color: #43301f; }
   .dir-sandsworn .coords input:focus { border-color: #c9a24b; }
@@ -284,11 +298,14 @@
   .dir-override .speed-val { color: #2ee6d6; }
   .dir-override .tp { background: #0a0c0e; border-bottom: 1px solid #11201f; }
   .dir-override .live-pos { color: #4ade80; }
-  .dir-override .save-btn { background: rgba(74,222,128,.08); color: #4ade80; border: 1px solid #2a6a3a; }
-  .dir-override .save-btn:hover { background: rgba(74,222,128,.16); }
-  .dir-override .tp-btn { background: rgba(255,61,166,.08); color: #ff3da6; border: 1px solid #6a2a52; }
-  .dir-override .tp-btn:hover { background: rgba(255,61,166,.16); }
-  .dir-override .saved { color: #4ade80; }
+  .dir-override .slot-letter { color: #2ee6d6; }
+  .dir-override .slot-name { background: #0c0f11; color: #8ad6cf; border-color: #173433; }
+  .dir-override .slot-name:focus { border-color: #2ee6d6; }
+  .dir-override .slot-save { background: rgba(74,222,128,.08); color: #4ade80; border: 1px solid #2a6a3a; border-radius: 2px; }
+  .dir-override .slot-save:hover { background: rgba(74,222,128,.16); }
+  .dir-override .slot-go  { background: rgba(255,61,166,.08); color: #ff3da6; border: 1px solid #6a2a52; border-radius: 2px; }
+  .dir-override .slot-go:hover  { background: rgba(255,61,166,.16); }
+  .dir-override .slot-coords { color: #4ade80; }
   .dir-override .coords label { color: #2ee6d6; }
   .dir-override .coords input { background: #0c0f11; color: #8ad6cf; border-color: #173433; }
   .dir-override .coords input:focus { border-color: #2ee6d6; }
@@ -353,8 +370,27 @@ const WINDOW_HTML = `
   <div class="sect">Teleport</div>
   <div class="tp">
     <div class="live-pos">Current&nbsp;&nbsp;X=1284.5&nbsp;&nbsp;Y=320.0&nbsp;&nbsp;Z=-842.3</div>
-    <div class="tp-btns"><button class="save-btn">Save Position</button><button class="tp-btn">Teleport Here</button></div>
-    <div class="saved">Saved&nbsp;&nbsp;X=1284.50&nbsp;&nbsp;Y=320.00&nbsp;&nbsp;Z=-842.30</div>
+    <div class="slot-row" data-slot="0">
+      <span class="slot-letter">A</span>
+      <input class="slot-name" value="Slot A">
+      <button class="slot-save">Save</button>
+      <button class="slot-go">Go</button>
+      <span class="slot-coords">--</span>
+    </div>
+    <div class="slot-row" data-slot="1">
+      <span class="slot-letter">B</span>
+      <input class="slot-name" value="Slot B">
+      <button class="slot-save">Save</button>
+      <button class="slot-go">Go</button>
+      <span class="slot-coords">--</span>
+    </div>
+    <div class="slot-row" data-slot="2">
+      <span class="slot-letter">C</span>
+      <input class="slot-name" value="Slot C">
+      <button class="slot-save">Save</button>
+      <button class="slot-go">Go</button>
+      <span class="slot-coords">--</span>
+    </div>
     <div class="coords"><label>X</label><input value="1284.50"><label>Y</label><input value="320.00"><label>Z</label><input value="-842.30"><button class="go-btn">Go</button></div>
   </div>
   <div class="log-wrap">
@@ -477,8 +513,35 @@ function initTrainer(win, d) {
 
   // entity / teleport buttons
   win.querySelector('.find-btn').addEventListener('click', () => addLog('Entity re-scan \u2192 0x7FF812A4C8B0', 'ok'));
-  win.querySelector('.save-btn').addEventListener('click', () => addLog('Position saved: X=1284.5 Y=320.0 Z=-842.3', 'ok'));
-  win.querySelector('.tp-btn').addEventListener('click', () => addLog('Teleported to saved position', 'ok'));
+
+  // Simulated live position that drifts (matches the polling interval below)
+  const simPos = { x: 1284.5, y: 320.0, z: -842.3 };
+
+  // Multi-slot teleport
+  const slotData = [null, null, null];
+  win.querySelectorAll('.slot-row').forEach(row => {
+    const idx    = parseInt(row.dataset.slot);
+    const nameIn = row.querySelector('.slot-name');
+    const coords = row.querySelector('.slot-coords');
+    row.querySelector('.slot-save').addEventListener('click', () => {
+      const lp = win.querySelector('.live-pos');
+      // Parse current live coords from the display
+      const m = lp.textContent.match(/X=([-\d.]+)\s+Y=([-\d.]+)\s+Z=([-\d.]+)/);
+      if (m) {
+        slotData[idx] = { x: m[1], y: m[2], z: m[3] };
+        coords.textContent = 'X=' + m[1] + '  Y=' + m[2] + '  Z=' + m[3];
+        addLog('[' + (nameIn.value.trim()||'Slot '+'ABC'[idx]) + '] saved: X=' + m[1] + '  Y=' + m[2] + '  Z=' + m[3], 'ok');
+      }
+    });
+    row.querySelector('.slot-go').addEventListener('click', () => {
+      if (slotData[idx]) {
+        addLog('Teleported to [' + (nameIn.value.trim()||'Slot '+'ABC'[idx]) + ']: X=' + slotData[idx].x + '  Y=' + slotData[idx].y + '  Z=' + slotData[idx].z, 'ok');
+      } else {
+        addLog('Slot ' + 'ABC'[idx] + ' is empty \u2014 save a position first.', 'warn');
+      }
+    });
+  });
+
   win.querySelector('.go-btn').addEventListener('click', () => {
     const v = win.querySelectorAll('.coords input');
     addLog('Teleport \u2192 X=' + v[0].value + ' Y=' + v[1].value + ' Z=' + v[2].value, 'ok');

@@ -61,9 +61,13 @@ namespace CrimsonTrainer
         // ── Teleport ─────────────────────────────────────────────────────────
         private System.Windows.Forms.Label    lblLiveCoords;
         private System.Windows.Forms.Panel    pnlTeleport;
-        private System.Windows.Forms.Button   btnSavePos;
-        private System.Windows.Forms.Button   btnTeleport;
-        private System.Windows.Forms.Label    lblCoords;
+        // Slot rows (A=0, B=1, C=2)
+        private System.Windows.Forms.Label    lblSlotLetterA, lblSlotLetterB, lblSlotLetterC;
+        private System.Windows.Forms.TextBox  txtSlotNameA,   txtSlotNameB,   txtSlotNameC;
+        private System.Windows.Forms.Button   btnSaveSlotA,   btnSaveSlotB,   btnSaveSlotC;
+        private System.Windows.Forms.Button   btnGoSlotA,     btnGoSlotB,     btnGoSlotC;
+        private System.Windows.Forms.Label    lblSlotCoordsA, lblSlotCoordsB, lblSlotCoordsC;
+        // Custom coordinate input
         private System.Windows.Forms.TextBox  txtX;
         private System.Windows.Forms.TextBox  txtY;
         private System.Windows.Forms.TextBox  txtZ;
@@ -132,9 +136,15 @@ namespace CrimsonTrainer
             this.lblSpiVal           = new System.Windows.Forms.Label();
             this.lblLiveCoords       = new System.Windows.Forms.Label();
             this.pnlTeleport         = new System.Windows.Forms.Panel();
-            this.btnSavePos          = new System.Windows.Forms.Button();
-            this.btnTeleport         = new System.Windows.Forms.Button();
-            this.lblCoords           = new System.Windows.Forms.Label();
+            this.lblSlotLetterA = new System.Windows.Forms.Label();   this.txtSlotNameA = new System.Windows.Forms.TextBox();
+            this.btnSaveSlotA   = new System.Windows.Forms.Button();  this.btnGoSlotA   = new System.Windows.Forms.Button();
+            this.lblSlotCoordsA = new System.Windows.Forms.Label();
+            this.lblSlotLetterB = new System.Windows.Forms.Label();   this.txtSlotNameB = new System.Windows.Forms.TextBox();
+            this.btnSaveSlotB   = new System.Windows.Forms.Button();  this.btnGoSlotB   = new System.Windows.Forms.Button();
+            this.lblSlotCoordsB = new System.Windows.Forms.Label();
+            this.lblSlotLetterC = new System.Windows.Forms.Label();   this.txtSlotNameC = new System.Windows.Forms.TextBox();
+            this.btnSaveSlotC   = new System.Windows.Forms.Button();  this.btnGoSlotC   = new System.Windows.Forms.Button();
+            this.lblSlotCoordsC = new System.Windows.Forms.Label();
             this.txtX                = new System.Windows.Forms.TextBox();
             this.txtY                = new System.Windows.Forms.TextBox();
             this.txtZ                = new System.Windows.Forms.TextBox();
@@ -370,7 +380,7 @@ namespace CrimsonTrainer
             // ── Teleport panel ───────────────────────────────────────────────
             this.pnlTeleport.Tag       = ThemeManager.TAG_TELEPORT;
             this.pnlTeleport.Dock      = System.Windows.Forms.DockStyle.Top;
-            this.pnlTeleport.Height    = 137;
+            this.pnlTeleport.Height    = 158;
             this.pnlTeleport.BackColor = System.Drawing.Color.FromArgb(28, 28, 42);
 
             this.lblLiveCoords.Tag       = ThemeManager.TAG_LIVE_POS;
@@ -378,45 +388,22 @@ namespace CrimsonTrainer
             this.lblLiveCoords.ForeColor = System.Drawing.Color.FromArgb(100, 170, 100);
             this.lblLiveCoords.Font      = new System.Drawing.Font("Consolas", 7.5f);
             this.lblLiveCoords.AutoSize  = true;
-            this.lblLiveCoords.Location  = new System.Drawing.Point(10, 10);
+            this.lblLiveCoords.Location  = new System.Drawing.Point(10, 8);
 
-            this.btnSavePos.Tag       = ThemeManager.TAG_SAVE_BTN;
-            this.btnSavePos.Text      = "📍 Save Position";
-            this.btnSavePos.Location  = new System.Drawing.Point(10, 32);
-            this.btnSavePos.Size      = new System.Drawing.Size(140, 30);
-            this.btnSavePos.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnSavePos.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(80, 120, 80);
-            this.btnSavePos.BackColor = System.Drawing.Color.FromArgb(35, 65, 35);
-            this.btnSavePos.ForeColor = System.Drawing.Color.White;
-            this.btnSavePos.Font      = new System.Drawing.Font("Segoe UI", 9f, System.Drawing.FontStyle.Bold);
-            this.btnSavePos.Cursor    = System.Windows.Forms.Cursors.Hand;
+            // Slot rows — A=y28, B=y60, C=y92
+            BuildSlotRow(this.lblSlotLetterA, this.txtSlotNameA, this.btnSaveSlotA, this.btnGoSlotA, this.lblSlotCoordsA, "A", "Slot A", 28);
+            BuildSlotRow(this.lblSlotLetterB, this.txtSlotNameB, this.btnSaveSlotB, this.btnGoSlotB, this.lblSlotCoordsB, "B", "Slot B", 60);
+            BuildSlotRow(this.lblSlotLetterC, this.txtSlotNameC, this.btnSaveSlotC, this.btnGoSlotC, this.lblSlotCoordsC, "C", "Slot C", 92);
 
-            this.btnTeleport.Tag       = ThemeManager.TAG_TP_BTN;
-            this.btnTeleport.Text      = "🚀 Teleport";
-            this.btnTeleport.Location  = new System.Drawing.Point(158, 32);
-            this.btnTeleport.Size      = new System.Drawing.Size(120, 30);
-            this.btnTeleport.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnTeleport.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(80, 80, 140);
-            this.btnTeleport.BackColor = System.Drawing.Color.FromArgb(35, 35, 80);
-            this.btnTeleport.ForeColor = System.Drawing.Color.White;
-            this.btnTeleport.Font      = new System.Drawing.Font("Segoe UI", 9f, System.Drawing.FontStyle.Bold);
-            this.btnTeleport.Cursor    = System.Windows.Forms.Cursors.Hand;
-
-            this.lblCoords.Tag       = ThemeManager.TAG_SAVED_COORDS;
-            this.lblCoords.Text      = "Saved: --";
-            this.lblCoords.ForeColor = System.Drawing.Color.FromArgb(140, 200, 140);
-            this.lblCoords.Font      = new System.Drawing.Font("Consolas", 8f);
-            this.lblCoords.AutoSize  = true;
-            this.lblCoords.Location  = new System.Drawing.Point(10, 70);
-
-            int row2y = 94;
+            // Custom coordinate row
+            int cRow = 126;
             this.lblXLabel.Tag = ThemeManager.TAG_COORD_LABEL;
             this.lblXLabel.Text = "X:"; this.lblXLabel.AutoSize = true;
             this.lblXLabel.ForeColor = System.Drawing.Color.Silver;
-            this.lblXLabel.Location = new System.Drawing.Point(10, row2y + 3);
+            this.lblXLabel.Location = new System.Drawing.Point(10, cRow + 3);
 
             this.txtX.Tag = ThemeManager.TAG_COORD_INPUT;
-            this.txtX.Location = new System.Drawing.Point(26, row2y); this.txtX.Size = new System.Drawing.Size(72, 22);
+            this.txtX.Location = new System.Drawing.Point(26, cRow); this.txtX.Size = new System.Drawing.Size(68, 22);
             this.txtX.BackColor = System.Drawing.Color.FromArgb(40, 40, 55); this.txtX.ForeColor = System.Drawing.Color.White;
             this.txtX.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.txtX.Font = new System.Drawing.Font("Consolas", 8.5f);
@@ -424,10 +411,10 @@ namespace CrimsonTrainer
             this.lblYLabel.Tag = ThemeManager.TAG_COORD_LABEL;
             this.lblYLabel.Text = "Y:"; this.lblYLabel.AutoSize = true;
             this.lblYLabel.ForeColor = System.Drawing.Color.Silver;
-            this.lblYLabel.Location = new System.Drawing.Point(104, row2y + 3);
+            this.lblYLabel.Location = new System.Drawing.Point(100, cRow + 3);
 
             this.txtY.Tag = ThemeManager.TAG_COORD_INPUT;
-            this.txtY.Location = new System.Drawing.Point(118, row2y); this.txtY.Size = new System.Drawing.Size(72, 22);
+            this.txtY.Location = new System.Drawing.Point(114, cRow); this.txtY.Size = new System.Drawing.Size(68, 22);
             this.txtY.BackColor = System.Drawing.Color.FromArgb(40, 40, 55); this.txtY.ForeColor = System.Drawing.Color.White;
             this.txtY.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.txtY.Font = new System.Drawing.Font("Consolas", 8.5f);
@@ -435,17 +422,17 @@ namespace CrimsonTrainer
             this.lblZLabel.Tag = ThemeManager.TAG_COORD_LABEL;
             this.lblZLabel.Text = "Z:"; this.lblZLabel.AutoSize = true;
             this.lblZLabel.ForeColor = System.Drawing.Color.Silver;
-            this.lblZLabel.Location = new System.Drawing.Point(198, row2y + 3);
+            this.lblZLabel.Location = new System.Drawing.Point(188, cRow + 3);
 
             this.txtZ.Tag = ThemeManager.TAG_COORD_INPUT;
-            this.txtZ.Location = new System.Drawing.Point(212, row2y); this.txtZ.Size = new System.Drawing.Size(72, 22);
+            this.txtZ.Location = new System.Drawing.Point(202, cRow); this.txtZ.Size = new System.Drawing.Size(68, 22);
             this.txtZ.BackColor = System.Drawing.Color.FromArgb(40, 40, 55); this.txtZ.ForeColor = System.Drawing.Color.White;
             this.txtZ.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.txtZ.Font = new System.Drawing.Font("Consolas", 8.5f);
 
             this.btnTeleportCustom.Tag       = ThemeManager.TAG_GO_BTN;
             this.btnTeleportCustom.Text      = "Go";
-            this.btnTeleportCustom.Location  = new System.Drawing.Point(290, row2y - 1);
+            this.btnTeleportCustom.Location  = new System.Drawing.Point(277, cRow - 1);
             this.btnTeleportCustom.Size      = new System.Drawing.Size(40, 24);
             this.btnTeleportCustom.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnTeleportCustom.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(80, 80, 140);
@@ -456,7 +443,9 @@ namespace CrimsonTrainer
 
             this.pnlTeleport.Controls.AddRange(new System.Windows.Forms.Control[] {
                 this.lblLiveCoords,
-                this.btnSavePos, this.btnTeleport, this.lblCoords,
+                this.lblSlotLetterA, this.txtSlotNameA, this.btnSaveSlotA, this.btnGoSlotA, this.lblSlotCoordsA,
+                this.lblSlotLetterB, this.txtSlotNameB, this.btnSaveSlotB, this.btnGoSlotB, this.lblSlotCoordsB,
+                this.lblSlotLetterC, this.txtSlotNameC, this.btnSaveSlotC, this.btnGoSlotC, this.lblSlotCoordsC,
                 this.lblXLabel, this.txtX, this.lblYLabel, this.txtY,
                 this.lblZLabel, this.txtZ, this.btnTeleportCustom
             });
@@ -558,6 +547,62 @@ namespace CrimsonTrainer
             valLabel.AutoSize  = false;
             valLabel.Size      = new System.Drawing.Size(130, 14);
             valLabel.Location  = new System.Drawing.Point(256, y + 3);
+        }
+
+        private static void BuildSlotRow(
+            System.Windows.Forms.Label  letter,
+            System.Windows.Forms.TextBox name,
+            System.Windows.Forms.Button save,
+            System.Windows.Forms.Button go,
+            System.Windows.Forms.Label  coords,
+            string letterText, string defaultName, int y)
+        {
+            letter.Tag      = ThemeManager.TAG_COORD_LABEL;
+            letter.Text     = letterText;
+            letter.AutoSize = false;
+            letter.Size     = new System.Drawing.Size(16, 16);
+            letter.Location = new System.Drawing.Point(10, y + 4);
+            letter.ForeColor = System.Drawing.Color.Silver;
+            letter.Font     = new System.Drawing.Font("Consolas", 9f, System.Drawing.FontStyle.Bold);
+
+            name.Tag         = ThemeManager.TAG_COORD_INPUT;
+            name.Text        = defaultName;
+            name.Location    = new System.Drawing.Point(30, y);
+            name.Size        = new System.Drawing.Size(88, 22);
+            name.BackColor   = System.Drawing.Color.FromArgb(40, 40, 55);
+            name.ForeColor   = System.Drawing.Color.White;
+            name.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            name.Font        = new System.Drawing.Font("Consolas", 8.5f);
+
+            save.Tag      = ThemeManager.TAG_SAVE_BTN;
+            save.Text     = "Save";
+            save.Location = new System.Drawing.Point(124, y);
+            save.Size     = new System.Drawing.Size(58, 22);
+            save.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            save.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(80, 120, 80);
+            save.BackColor = System.Drawing.Color.FromArgb(35, 65, 35);
+            save.ForeColor = System.Drawing.Color.White;
+            save.Font      = new System.Drawing.Font("Segoe UI", 8f, System.Drawing.FontStyle.Bold);
+            save.Cursor    = System.Windows.Forms.Cursors.Hand;
+
+            go.Tag      = ThemeManager.TAG_TP_BTN;
+            go.Text     = "Go";
+            go.Location = new System.Drawing.Point(188, y);
+            go.Size     = new System.Drawing.Size(44, 22);
+            go.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            go.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(80, 80, 140);
+            go.BackColor = System.Drawing.Color.FromArgb(35, 35, 80);
+            go.ForeColor = System.Drawing.Color.White;
+            go.Font      = new System.Drawing.Font("Segoe UI", 8f, System.Drawing.FontStyle.Bold);
+            go.Cursor    = System.Windows.Forms.Cursors.Hand;
+
+            coords.Tag      = ThemeManager.TAG_SAVED_COORDS;
+            coords.Text     = "--";
+            coords.AutoSize = false;
+            coords.Size     = new System.Drawing.Size(168, 14);
+            coords.Location = new System.Drawing.Point(238, y + 4);
+            coords.ForeColor = System.Drawing.Color.FromArgb(140, 200, 140);
+            coords.Font     = new System.Drawing.Font("Consolas", 7f);
         }
 
         private static void BuildCheatRow(

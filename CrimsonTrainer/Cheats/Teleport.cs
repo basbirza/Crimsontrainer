@@ -2,13 +2,23 @@ using System;
 
 namespace CrimsonTrainer.Cheats
 {
+    /// <summary>One named bookmark slot.</summary>
+    public struct TeleportSlot
+    {
+        public string Name;
+        public float  X, Y, Z;
+        public bool   HasPosition;
+
+        public TeleportSlot(string name)
+        {
+            Name        = name;
+            X = Y = Z   = 0f;
+            HasPosition = false;
+        }
+    }
+
     // Position offsets from the movement entity (entityCapturePtr = [rsi] at INJECT_ENTCAP):
     //   entityCapturePtr + 0x90  = world position float4 {X, Z_height, Y, W}
-    //
-    // In the CT the injection at INJECT_ENTCAP captures `[rsi]` as the movement entity.
-    // Our entity_base (stats entity) is captured from a different code path (rbx/rdi).
-    // If both point to the same struct the offsets below work directly.
-    // If not, entity_base + 0xF0 is the fallback (rbp+0xF0 used as position arg in same function).
     //
     // Layout: [entity + 0x90] = X (float), [entity + 0x94] = Z_height (float), [entity + 0x98] = Y (float)
     //
@@ -25,11 +35,13 @@ namespace CrimsonTrainer.Cheats
         private readonly MemoryManager _mem;
         private readonly CheatManager  _mgr;
 
-        // Saved coordinates
-        public float SavedX { get; private set; }
-        public float SavedY { get; private set; }
-        public float SavedZ { get; private set; }
-        public bool  HasSavedPosition { get; private set; }
+        // ── 3 named slots (A = 0, B = 1, C = 2) ────────────────────────────
+        public TeleportSlot[] Slots { get; } = new TeleportSlot[3]
+        {
+            new TeleportSlot("Slot A"),
+            new TeleportSlot("Slot B"),
+            new TeleportSlot("Slot C"),
+        };
 
         public event Action? PositionChanged;
 
@@ -39,9 +51,8 @@ namespace CrimsonTrainer.Cheats
             _mgr = mgr;
         }
 
-        public void Toggle() { }  // Teleport is not a toggle — it's triggered on demand.
-
-        public void Apply() { }   // No per-tick apply; teleport is one-shot via TeleportNow().
+        public void Toggle() { }
+        public void Apply()  { }
 
         // ── Read current position ────────────────────────────────────────────
 
@@ -56,29 +67,31 @@ namespace CrimsonTrainer.Cheats
             return (x, y, z);
         }
 
-        // ── Save current position ────────────────────────────────────────────
+        // ── Slot operations ──────────────────────────────────────────────────
 
-        public bool SavePosition()
+        /// <summary>Save current world position into the given slot (0–2).</summary>
+        public bool SaveToSlot(int index)
         {
+            if ((uint)index >= (uint)Slots.Length) return false;
             if (!_mem.IsAttached || _mgr.EntityBase == IntPtr.Zero) return false;
 
-            (SavedX, SavedZ, SavedY) = ReadCurrentPosition();
-            HasSavedPosition = true;
+            var (x, y, z) = ReadCurrentPosition();
+            Slots[index].X           = x;
+            Slots[index].Y           = y;
+            Slots[index].Z           = z;
+            Slots[index].HasPosition = true;
             PositionChanged?.Invoke();
             return true;
         }
 
-        // ── Teleport to saved position ───────────────────────────────────────
-
-        public bool TeleportNow()
+        /// <summary>Teleport to the saved position in the given slot (0–2).</summary>
+        public bool TeleportToSlot(int index)
         {
-            if (!_mem.IsAttached || _mgr.EntityBase == IntPtr.Zero || !HasSavedPosition)
-                return false;
+            if ((uint)index >= (uint)Slots.Length) return false;
+            if (!_mem.IsAttached || _mgr.EntityBase == IntPtr.Zero) return false;
+            if (!Slots[index].HasPosition) return false;
 
-            _mem.WriteFloat(IntPtr.Add(_mgr.EntityBase, OffsetX), SavedX);
-            _mem.WriteFloat(IntPtr.Add(_mgr.EntityBase, OffsetZ), SavedZ);
-            _mem.WriteFloat(IntPtr.Add(_mgr.EntityBase, OffsetY), SavedY);
-            return true;
+            return TeleportTo(Slots[index].X, Slots[index].Y, Slots[index].Z);
         }
 
         // ── Teleport to custom coordinates ───────────────────────────────────

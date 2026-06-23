@@ -55,9 +55,15 @@ namespace CrimsonTrainer
             trkSpeed.ValueChanged += OnSpeedSliderChanged;
 
             btnFindEntity.Click     += OnFindEntityClicked;
-            btnSavePos.Click        += OnSavePosClicked;
-            btnTeleport.Click       += OnTeleportClicked;
             btnTeleportCustom.Click += OnTeleportCustomClicked;
+
+            // Teleport slot buttons
+            btnSaveSlotA.Click += (_, __) => OnSaveSlot(0, txtSlotNameA, lblSlotCoordsA);
+            btnSaveSlotB.Click += (_, __) => OnSaveSlot(1, txtSlotNameB, lblSlotCoordsB);
+            btnSaveSlotC.Click += (_, __) => OnSaveSlot(2, txtSlotNameC, lblSlotCoordsC);
+            btnGoSlotA.Click   += (_, __) => OnGoSlot(0);
+            btnGoSlotB.Click   += (_, __) => OnGoSlot(1);
+            btnGoSlotC.Click   += (_, __) => OnGoSlot(2);
 
             // Theme picker
             btnTheme0.Click += (_, __) => ApplyTheme(ThemeDefinitions.MidnightForge);
@@ -65,7 +71,7 @@ namespace CrimsonTrainer
             btnTheme2.Click += (_, __) => ApplyTheme(ThemeDefinitions.Sandsworn);
             btnTheme3.Click += (_, __) => ApplyTheme(ThemeDefinitions.Override);
 
-            _cheatManager.Teleport.PositionChanged += RefreshCoordsLabel;
+            _cheatManager.Teleport.PositionChanged += RefreshSlotLabels;
 
             _pollTimer = new System.Windows.Forms.Timer { Interval = 300 };
             _pollTimer.Tick += (_, __) => UpdateLiveStats();
@@ -119,26 +125,35 @@ namespace CrimsonTrainer
 
         // ── Teleport buttons ─────────────────────────────────────────────────
 
-        private void OnSavePosClicked(object? sender, EventArgs e)
+        private void OnSaveSlot(int index, System.Windows.Forms.TextBox nameBox, System.Windows.Forms.Label coordsLabel)
         {
-            if (_cheatManager.Teleport.SavePosition())
+            if (_cheatManager.Teleport.SaveToSlot(index))
             {
-                RefreshCoordsLabel();
-                var (x, y, z) = _cheatManager.Teleport.ReadCurrentPosition();
-                AppendLog($"Position saved: X={x:F1}  Y={y:F1}  Z={z:F1}");
+                // Update the slot name from the text box
+                _cheatManager.Teleport.Slots[index].Name = nameBox.Text.Trim().Length > 0
+                    ? nameBox.Text.Trim() : $"Slot {(char)('A' + index)}";
+
+                var s = _cheatManager.Teleport.Slots[index];
+                coordsLabel.Text = $"X={s.X:F1}  Y={s.Y:F1}  Z={s.Z:F1}";
+                AppendLog($"[{s.Name}] saved: X={s.X:F1}  Y={s.Y:F1}  Z={s.Z:F1}");
             }
             else
             {
-                AppendLog("Cannot save position: entity not found.");
+                AppendLog("Cannot save: entity not found.");
             }
         }
 
-        private void OnTeleportClicked(object? sender, EventArgs e)
+        private void OnGoSlot(int index)
         {
-            if (_cheatManager.Teleport.TeleportNow())
-                AppendLog("Teleported to saved position.");
+            if (_cheatManager.Teleport.TeleportToSlot(index))
+            {
+                var s = _cheatManager.Teleport.Slots[index];
+                AppendLog($"Teleported to [{s.Name}]: X={s.X:F1}  Y={s.Y:F1}  Z={s.Z:F1}");
+            }
             else
-                AppendLog("Cannot teleport: no saved position or entity not found.");
+            {
+                AppendLog("Cannot teleport: slot empty or entity not found.");
+            }
         }
 
         private void OnTeleportCustomClicked(object? sender, EventArgs e)
@@ -159,21 +174,18 @@ namespace CrimsonTrainer
                 AppendLog("Cannot teleport: entity not found.");
         }
 
-        private void RefreshCoordsLabel()
+        private void RefreshSlotLabels()
         {
-            if (InvokeRequired) { Invoke(RefreshCoordsLabel); return; }
+            if (InvokeRequired) { Invoke(RefreshSlotLabels); return; }
 
-            var tp = _cheatManager.Teleport;
-            if (tp.HasSavedPosition)
+            var slots  = _cheatManager.Teleport.Slots;
+            var labels = new[] { lblSlotCoordsA, lblSlotCoordsB, lblSlotCoordsC };
+
+            for (int i = 0; i < slots.Length; i++)
             {
-                lblCoords.Text = $"Saved: X={tp.SavedX:F1}  Y={tp.SavedY:F1}  Z={tp.SavedZ:F1}";
-                txtX.Text = tp.SavedX.ToString("F2", System.Globalization.CultureInfo.InvariantCulture);
-                txtY.Text = tp.SavedY.ToString("F2", System.Globalization.CultureInfo.InvariantCulture);
-                txtZ.Text = tp.SavedZ.ToString("F2", System.Globalization.CultureInfo.InvariantCulture);
-            }
-            else
-            {
-                lblCoords.Text = "Saved: --";
+                labels[i].Text = slots[i].HasPosition
+                    ? $"X={slots[i].X:F1}  Y={slots[i].Y:F1}  Z={slots[i].Z:F1}"
+                    : "--";
             }
         }
 
