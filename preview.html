@@ -439,21 +439,27 @@ function buildWindow(d) {
 function fitTrainer() {
   const trainer = stage.querySelector('.trainer');
   if (!trainer) return;
-  // Reset any previous scale so we measure the natural height
+  // Reset any previous scale so we can measure the natural height
   trainer.style.transform = '';
   trainer.style.transformOrigin = 'top left';
   const trH = trainer.scrollHeight;
-  const availH = stage.clientHeight;
+  // Subtract 2 px to absorb sub-pixel rounding and border-radius overhang
+  const availH = stage.clientHeight - 2;
   if (availH > 0 && trH > availH) {
     const scale = availH / trH;
     trainer.style.transform = 'scale(' + scale + ')';
-    // Collapse the dead space to the right of the scaled window
     stage.style.width = Math.ceil(420 * scale) + 'px';
   } else {
     stage.style.width = '420px';
   }
 }
+
+// Re-measure after every resize (handles window resize)
 window.addEventListener('resize', fitTrainer);
+
+// Re-measure after fonts load — Google Fonts inflate the header by ~11 px
+// which shrinks the stage; without this the trainer overflows by that amount.
+document.fonts.ready.then(fitTrainer);
 
 function selectTheme(d) {
   stage.innerHTML = '';
@@ -462,7 +468,8 @@ function selectTheme(d) {
   initTrainer(win, d);
   switcher.querySelectorAll('.theme-btn').forEach(b => b.classList.toggle('sel', b.dataset.id === d.id));
   localStorage.setItem('cdt-theme', d.id);
-  fitTrainer();
+  // Use double-rAF so the browser finishes its first layout pass before measuring
+  requestAnimationFrame(() => requestAnimationFrame(fitTrainer));
 }
 
 DIRECTIONS.forEach((d, i) => {
