@@ -36,6 +36,8 @@
   .hd-title { font-size: 16px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; }
   .status { display: flex; align-items: center; gap: 7px; margin-top: 8px; font-size: 11px; }
   .dot { font-size: 9px; }
+  .theme-bar { display: flex; gap: 4px; padding: 5px 8px; }
+  .tpick-btn { flex: 1; padding: 5px 4px; font-size: 10px; font-weight: 700; border-radius: 3px; cursor: pointer; border: 1px solid transparent; transition: border-color .12s, background .12s; letter-spacing: .3px; }
   .ent { display: flex; align-items: center; gap: 12px; padding: 10px 12px; }
   .find-btn { padding: 6px 13px; font-size: 12px; font-weight: 600; border-radius: 4px; cursor: pointer; white-space: nowrap; transition: background .15s, border-color .15s, box-shadow .15s; }
   .ent-lbl { font-size: 11.5px; }
@@ -126,6 +128,10 @@
   .dir-forge .log { background: #0b0c12; border: 1px solid #1d1f2a; color: #50d860; }
   .dir-forge .log-title { color: #4d4f63; }
   .dir-forge .log .ok { color: #50d860; } .dir-forge .log .info { color: #6088a0; } .dir-forge .log .warn { color: #c8a030; } .dir-forge .log .ts { color: #3a4a3a; }
+  .dir-forge .theme-bar { background: #14151d; border-bottom: 1px solid #24262f; }
+  .dir-forge .tpick-btn { background: #1c1d27; color: #6a6c80; border-color: #34364a; }
+  .dir-forge .tpick-btn:hover { background: #23252f; color: #c4c6d4; }
+  .dir-forge .tpick-btn.active { background: #2c1418; color: #fff; border-color: #e0383c; }
 
   /* ════════════════════════════════════════════════════════════════════ */
   /*  02 · ATELIER — sleek modern / light                                   */
@@ -176,6 +182,10 @@
   .dir-atelier .log-title { color: #a6a6b2; }
   .dir-atelier .log { background: #f6f6f9; border: 1px solid #ededf2; color: #3a3b45; }
   .dir-atelier .log .ok { color: #12a06a; } .dir-atelier .log .info { color: #6a6a76; } .dir-atelier .log .warn { color: #c08a1e; } .dir-atelier .log .ts { color: #b4b4c0; }
+  .dir-atelier .theme-bar { background: #fafafb; border-bottom: 1px solid #eeeef2; }
+  .dir-atelier .tpick-btn { background: #f6f6f9; color: #9a9aa6; border-color: #ededf2; border-radius: 8px; }
+  .dir-atelier .tpick-btn:hover { background: #ededf2; color: #3a3b45; }
+  .dir-atelier .tpick-btn.active { background: #e6f7ef; color: #0c6b46; border-color: #12a06a; }
 
   /* ════════════════════════════════════════════════════════════════════ */
   /*  03 · SANDSWORN — Crimson Desert lore / ornate gold                    */
@@ -228,6 +238,10 @@
   .dir-sandsworn .log-title { color: #8a6f4e; font-family: 'Cinzel', serif; }
   .dir-sandsworn .log { background: #0c0806; border: 1px solid #2a1d16; color: #c9a24b; }
   .dir-sandsworn .log .ok { color: #c9a24b; } .dir-sandsworn .log .info { color: #8a7a5a; } .dir-sandsworn .log .warn { color: #e0884a; } .dir-sandsworn .log .ts { color: #4a3a28; }
+  .dir-sandsworn .theme-bar { background: #160f0d; border-bottom: 1px solid #2a1d16; }
+  .dir-sandsworn .tpick-btn { background: #1f1611; color: #6a543a; border-color: #43301f; font-family: 'Cinzel', serif; font-size: 9px; }
+  .dir-sandsworn .tpick-btn:hover { background: #271c15; color: #cbb389; }
+  .dir-sandsworn .tpick-btn.active { background: #3a160f; color: #f0d2a0; border-color: #c9a24b; }
 
   /* ════════════════════════════════════════════════════════════════════ */
   /*  04 · OVERRIDE — cyberpunk hacker terminal                             */
@@ -283,6 +297,10 @@
   .dir-override .log-title { color: #2a6a66; }
   .dir-override .log { background: #050607; border: 1px solid #11201f; color: #2ee6d6; }
   .dir-override .log .ok { color: #4ade80; } .dir-override .log .info { color: #2a8a82; } .dir-override .log .warn { color: #ff3da6; } .dir-override .log .ts { color: #2a4a48; }
+  .dir-override .theme-bar { background: #0a0c0e; border-bottom: 1px solid #11201f; }
+  .dir-override .tpick-btn { background: #0c0f11; color: #2a6a66; border-color: #173433; border-radius: 2px; }
+  .dir-override .tpick-btn:hover { background: #0f1517; color: #8ad6cf; border-color: #235755; }
+  .dir-override .tpick-btn.active { background: rgba(46,230,214,.12); color: #2ee6d6; border-color: #2ee6d6; box-shadow: 0 0 8px rgba(46,230,214,.2); }
 </style>
 </head>
 <body>
@@ -302,6 +320,12 @@ const WINDOW_HTML = `
   <div class="hd">
     <div class="hd-title">Crimson Desert Trainer</div>
     <div class="status"><span class="dot">&#9679;</span><span class="stxt">ATTACHED &mdash; CrimsonDesert.exe</span></div>
+  </div>
+  <div class="theme-bar">
+    <button class="tpick-btn active" data-pick="forge">Midnight Forge</button>
+    <button class="tpick-btn" data-pick="atelier">Atelier</button>
+    <button class="tpick-btn" data-pick="sandsworn">Sandsworn</button>
+    <button class="tpick-btn" data-pick="override">Override</button>
   </div>
   <div class="ent">
     <button class="find-btn">Find Entity</button>
@@ -434,6 +458,21 @@ function initTrainer(win, d) {
     addLog('Speed Multiplier (' + sval.textContent + '): ' + (active ? 'ENABLED' : 'DISABLED'), active ? 'ok' : 'warn');
   });
   slider.addEventListener('input', () => { sval.textContent = (slider.value / 10).toFixed(1) + '\u00D7'; });
+
+  // in-window theme picker buttons
+  win.querySelectorAll('.tpick-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const pick = btn.dataset.pick;
+      // switch the outer dir-* class
+      DIRECTIONS.forEach(dir => win.classList.remove('dir-' + dir.id));
+      win.classList.add('dir-' + pick);
+      // update active state on tpick buttons
+      win.querySelectorAll('.tpick-btn').forEach(b => b.classList.toggle('active', b.dataset.pick === pick));
+      // also switch the outer switcher highlight
+      const found = DIRECTIONS.find(dd => dd.id === pick); if (found) selectTheme(found);
+      addLog('Theme changed \u2192 ' + btn.textContent, 'info');
+    });
+  });
 
   // entity / teleport buttons
   win.querySelector('.find-btn').addEventListener('click', () => addLog('Entity re-scan \u2192 0x7FF812A4C8B0', 'ok'));
