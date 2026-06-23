@@ -1,582 +1,485 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="utf-8">
-<title>Crimson Desert Trainer Preview</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Crimson Desert Trainer — Visual Directions</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  body {
-    background: #13131f;
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    min-height: 100vh;
-    padding: 30px 0 50px;
-    font-family: 'Segoe UI', sans-serif;
-  }
+  body { background: #1c1d22; min-height: 100vh; -webkit-font-smoothing: antialiased; }
 
-  .window {
-    width: 420px;
-    background: #1e1e2a;
-    border: 1px solid #3a3a50;
-    border-radius: 6px;
-    overflow: hidden;
-    box-shadow: 0 12px 48px rgba(0,0,0,0.8);
-  }
+  /* ── Canvas ──────────────────────────────────────────────────────────── */
+  .canvas { width: max-content; min-width: 100%; min-height: 100vh; padding: 52px 48px 64px; box-sizing: border-box; }
+  .page-title { font-family: 'Space Grotesk', sans-serif; color: #d8d9e0; font-size: 18px; font-weight: 600; letter-spacing: .4px; margin-bottom: 4px; }
+  .page-sub { font-family: 'JetBrains Mono', monospace; color: #6a6c7a; font-size: 12px; margin-bottom: 36px; }
+  .row { display: flex; align-items: flex-start; gap: 44px; }
+  .frame { flex: none; width: 420px; }
+  .label { font-family: 'Space Grotesk', sans-serif; color: #e6e7ee; font-size: 15px; font-weight: 600; letter-spacing: .3px; }
+  .sub { font-family: 'JetBrains Mono', monospace; color: #6a6c7a; font-size: 11px; margin: 3px 0 16px; letter-spacing: .2px; }
+  .switcher { display: inline-flex; gap: 4px; padding: 4px; background: #131419; border: 1px solid #2b2d3a; border-radius: 10px; margin-bottom: 32px; }
+  .theme-btn { font-family: 'Space Grotesk', sans-serif; font-size: 12.5px; font-weight: 600; color: #8a8c9e; background: transparent; border: none; padding: 8px 16px; border-radius: 7px; cursor: pointer; transition: background .15s, color .15s; white-space: nowrap; }
+  .theme-btn:hover { color: #d8d9e0; }
+  .theme-btn.sel { background: #2a2c3a; color: #fff; }
+  .theme-btn .swatch { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 7px; vertical-align: 1px; }
+  .stage { width: 420px; }
 
-  /* ── Title bar ─────────────────────────────────────────────────────────── */
-  .titlebar {
-    background: #16161f;
-    padding: 7px 10px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    border-bottom: 1px solid #2a2a3a;
-    user-select: none;
-  }
-  .titlebar-text { color: #888; font-size: 11px; letter-spacing: 0.5px; }
-  .titlebar-btns { display: flex; gap: 6px; }
-  .titlebar-btns span {
-    width: 12px; height: 12px; border-radius: 50%; display: inline-block;
-    cursor: pointer;
-  }
-  .btn-close { background: #ff5f57; }
-  .btn-min   { background: #ffbd2e; }
-  .btn-max   { background: #28c940; }
+  /* ── Shared structure (theme-agnostic layout) ───────────────────────── */
+  .trainer { width: 420px; border-radius: 8px; overflow: hidden; position: relative; }
+  .tb { display: flex; align-items: center; justify-content: space-between; padding: 8px 12px; }
+  .tb-text { font-size: 11px; letter-spacing: .5px; }
+  .tb-dots { display: flex; gap: 6px; }
+  .tb-dots span { width: 11px; height: 11px; border-radius: 50%; display: inline-block; }
+  .hd { padding: 14px 14px 13px; }
+  .hd-title { font-size: 16px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; }
+  .status { display: flex; align-items: center; gap: 7px; margin-top: 8px; font-size: 11px; }
+  .dot { font-size: 9px; }
+  .ent { display: flex; align-items: center; gap: 12px; padding: 10px 12px; }
+  .find-btn { padding: 6px 13px; font-size: 12px; font-weight: 600; border-radius: 4px; cursor: pointer; white-space: nowrap; transition: background .15s, border-color .15s, box-shadow .15s; }
+  .ent-lbl { font-size: 11.5px; }
+  .sect { padding: 8px 12px 5px; font-size: 9.5px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; }
+  .stats { padding: 9px 12px 13px; display: flex; flex-direction: column; gap: 9px; }
+  .stat { display: flex; align-items: center; gap: 10px; }
+  .stat-lbl { font-size: 10px; width: 30px; flex-shrink: 0; letter-spacing: .5px; }
+  .bar { flex: 1; height: 7px; border-radius: 4px; overflow: hidden; }
+  .bar-fill { height: 100%; border-radius: 4px; transition: width .3s ease; }
+  .stat-val { font-size: 10px; width: 102px; flex-shrink: 0; text-align: right; }
+  .cheats { padding: 9px 12px 11px; display: flex; flex-direction: column; gap: 6px; }
+  .divider { display: flex; align-items: center; gap: 9px; margin: 6px 0 3px; }
+  .divider::before, .divider::after { content: ''; flex: 1; height: 1px; }
+  .divider span { font-size: 9px; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; }
+  .crow { display: flex; align-items: center; gap: 10px; }
+  .cheat-btn { flex: 1; display: flex; align-items: center; gap: 9px; padding: 9px 12px; font-size: 12.5px; font-weight: 600; text-align: left; border-radius: 4px; cursor: pointer; user-select: none; transition: background .12s, border-color .12s, box-shadow .12s, color .12s; }
+  .ind { font-size: 9px; flex-shrink: 0; }
+  .hk { font-size: 11px; min-width: 28px; text-align: right; }
+  .speed-row { display: flex; align-items: center; gap: 10px; margin-top: 3px; }
+  .speed-btn { display: flex; align-items: center; gap: 9px; padding: 9px 12px; font-size: 12.5px; font-weight: 600; border-radius: 4px; cursor: pointer; user-select: none; width: 188px; flex-shrink: 0; transition: background .12s, border-color .12s, box-shadow .12s, color .12s; }
+  .speed-slider { flex: 1; -webkit-appearance: none; appearance: none; height: 3px; border-radius: 2px; outline: none; cursor: pointer; }
+  .speed-slider::-webkit-slider-thumb { -webkit-appearance: none; width: 13px; height: 13px; border-radius: 50%; cursor: pointer; box-shadow: 0 1px 4px rgba(0,0,0,.5); }
+  .speed-val { font-size: 12px; font-weight: 700; min-width: 36px; text-align: right; }
+  .speed-hk { font-size: 11px; min-width: 28px; text-align: right; }
+  .tp { padding: 10px 12px; }
+  .live-pos { font-size: 10px; margin-bottom: 10px; letter-spacing: .3px; }
+  .tp-btns { display: flex; gap: 8px; margin-bottom: 8px; }
+  .save-btn, .tp-btn { flex: 1; padding: 8px 10px; font-size: 11.5px; font-weight: 600; border-radius: 4px; cursor: pointer; transition: background .12s; }
+  .saved { font-size: 10px; margin-bottom: 9px; }
+  .coords { display: flex; align-items: center; gap: 6px; }
+  .coords label { font-size: 11px; }
+  .coords input { width: 70px; padding: 5px 6px; font-size: 11px; border-radius: 3px; outline: none; border: 1px solid transparent; }
+  .go-btn { padding: 5px 11px; font-size: 11.5px; font-weight: 700; border-radius: 3px; cursor: pointer; margin-left: 2px; }
+  .log-wrap { padding: 8px 12px 13px; }
+  .log-title { font-size: 9.5px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 6px; }
+  .log { height: 120px; overflow-y: auto; font-size: 10.5px; line-height: 1.6; padding: 9px; border-radius: 4px; }
+  .log .ts { opacity: .65; }
 
-  /* ── Header ─────────────────────────────────────────────────────────────── */
-  .header {
-    background: #11111a;
-    padding: 12px 14px 10px;
-    border-bottom: 1px solid #2a2a3a;
-  }
-  .header h1 {
-    color: #c83030;
-    font-size: 15px;
-    font-weight: bold;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-  }
-  .status {
-    font-size: 11px;
-    margin-top: 5px;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-  .dot-attached { color: #32c850; font-size: 13px; }
-  .txt-attached { color: #32c850; }
-  .dot-detached { color: #c83030; font-size: 13px; }
-  .txt-detached { color: #c83030; }
+  /* mono helpers — applied per theme */
+  .ent-lbl, .stat-val, .hk, .speed-val, .speed-hk, .live-pos, .saved, .coords input, .log { font-family: var(--mono, 'JetBrains Mono', monospace); }
 
-  /* ── Entity bar ─────────────────────────────────────────────────────────── */
-  .entity-bar {
-    background: #181826;
-    padding: 9px 12px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    border-bottom: 1px solid #2a2a3a;
-  }
-  .btn-find {
-    background: #252545;
-    color: #ccc;
-    border: 1px solid #4a4a78;
-    padding: 5px 11px;
-    font-size: 12px;
-    font-weight: 600;
-    border-radius: 3px;
-    cursor: pointer;
-    white-space: nowrap;
-    transition: background .15s;
-  }
-  .btn-find:hover { background: #2e2e5a; }
-  .entity-found  { font-size: 11.5px; color: #30c848; font-family: 'Consolas', monospace; }
-  .entity-lost   { font-size: 11.5px; color: #c83030; font-family: 'Consolas', monospace; }
+  /* ════════════════════════════════════════════════════════════════════ */
+  /*  01 · MIDNIGHT FORGE — refined dark / crimson                          */
+  /* ════════════════════════════════════════════════════════════════════ */
+  .dir-forge { --mono: 'JetBrains Mono', monospace; font-family: 'Space Grotesk', sans-serif;
+    background: #15161c; border: 1px solid #2b2d3a; box-shadow: 0 18px 54px rgba(0,0,0,.7); }
+  .dir-forge .tb { background: #0f1015; border-bottom: 1px solid #24262f; }
+  .dir-forge .tb-text { color: #6b6d7e; }
+  .dir-forge .d-close { background: #e0484c; } .dir-forge .d-min { background: #e0a83a; } .dir-forge .d-max { background: #34c860; }
+  .dir-forge .hd { background: #101119; border-bottom: 1px solid #24262f; }
+  .dir-forge .hd-title { color: #e0383c; }
+  .dir-forge .status .dot, .dir-forge .status .stxt { color: #34c860; }
+  .dir-forge .ent { background: #14151d; border-bottom: 1px solid #24262f; }
+  .dir-forge .find-btn { background: #1d1f2b; color: #c9cbd8; border: 1px solid #383b52; }
+  .dir-forge .find-btn:hover { background: #262838; border-color: #4a4d68; }
+  .dir-forge .ent-lbl { color: #34c860; }
+  .dir-forge .sect { background: #16171f; color: #4d4f63; border-bottom: 1px solid #23252f; }
+  .dir-forge .stats { background: #0f1018; border-bottom: 1px solid #24262f; }
+  .dir-forge .bar { background: #20222e; }
+  .dir-forge .bar-fill.hp { background: linear-gradient(90deg, #28a840, #50e870); }
+  .dir-forge .bar-fill.sta { background: linear-gradient(90deg, #2070c8, #40a0f0); }
+  .dir-forge .bar-fill.spi { background: linear-gradient(90deg, #8020c0, #c050f0); }
+  .dir-forge .stat-lbl { color: #8a8c9e; } .dir-forge .stat-val { color: #6a6c80; }
+  .dir-forge .cheats { background: #16171f; border-bottom: 1px solid #24262f; }
+  .dir-forge .divider::before, .dir-forge .divider::after { background: #2a2c3a; }
+  .dir-forge .divider span { color: #4a4c60; }
+  .dir-forge .cheat-btn, .dir-forge .speed-btn { background: #1c1d27; color: #c4c6d4; border: 1px solid #34364a; }
+  .dir-forge .cheat-btn:hover, .dir-forge .speed-btn:hover { background: #23252f; }
+  .dir-forge .cheat-btn .ind, .dir-forge .speed-btn .ind { color: #565870; }
+  .dir-forge .cheat-btn.active, .dir-forge .speed-btn.active { background: #2c1418; border-color: #c0303a; color: #fff; box-shadow: inset 0 0 12px rgba(224,56,60,.25), 0 0 0 1px rgba(224,56,60,.15); }
+  .dir-forge .cheat-btn.active .ind, .dir-forge .speed-btn.active .ind { color: #ff6a6e; }
+  .dir-forge .hk, .dir-forge .speed-hk { color: #5a5c70; }
+  .dir-forge .speed-slider { background: #34364a; }
+  .dir-forge .speed-slider::-webkit-slider-thumb { background: #e0484c; }
+  .dir-forge .speed-val { color: #ff7a7e; }
+  .dir-forge .tp { background: #14151d; border-bottom: 1px solid #24262f; }
+  .dir-forge .live-pos { color: #5a7a5e; }
+  .dir-forge .save-btn { background: #16271a; color: #b6d6bc; border: 1px solid #2f5a38; }
+  .dir-forge .save-btn:hover { background: #1d3322; }
+  .dir-forge .tp-btn { background: #161a2e; color: #b6bce0; border: 1px solid #34406e; }
+  .dir-forge .tp-btn:hover { background: #1d2240; }
+  .dir-forge .saved { color: #5a9860; }
+  .dir-forge .coords label { color: #888aa0; }
+  .dir-forge .coords input { background: #1a1c28; color: #cfd2e0; border-color: #34364a; }
+  .dir-forge .coords input:focus { border-color: #c0303a; }
+  .dir-forge .go-btn { background: #2c1418; color: #ff8a8e; border: 1px solid #c0303a; }
+  .dir-forge .log-wrap { background: #101119; }
+  .dir-forge .log { background: #0b0c12; border: 1px solid #1d1f2a; color: #50d860; }
+  .dir-forge .log-title { color: #4d4f63; }
+  .dir-forge .log .ok { color: #50d860; } .dir-forge .log .info { color: #6088a0; } .dir-forge .log .warn { color: #c8a030; } .dir-forge .log .ts { color: #3a4a3a; }
 
-  /* ── Section header label ───────────────────────────────────────────────── */
-  .section-hdr {
-    padding: 7px 12px 4px;
-    font-size: 9.5px;
-    font-weight: 700;
-    letter-spacing: 2px;
-    color: #505068;
-    text-transform: uppercase;
-    border-bottom: 1px solid #252535;
-    background: #1a1a26;
-  }
+  /* ════════════════════════════════════════════════════════════════════ */
+  /*  02 · ATELIER — sleek modern / light                                   */
+  /* ════════════════════════════════════════════════════════════════════ */
+  .dir-atelier { --mono: 'JetBrains Mono', monospace; font-family: 'Manrope', sans-serif;
+    background: #ffffff; border: 1px solid #e7e7ec; border-radius: 14px; box-shadow: 0 24px 60px rgba(24,24,46,.22); }
+  .dir-atelier .tb { background: #fafafb; border-bottom: 1px solid #eeeef2; }
+  .dir-atelier .tb-text { color: #a0a0ac; font-weight: 500; }
+  .dir-atelier .d-close { background: #ff6159; } .dir-atelier .d-min { background: #ffbd2e; } .dir-atelier .d-max { background: #28c840; }
+  .dir-atelier .hd { background: #fff; }
+  .dir-atelier .hd-title { color: #18181f; font-weight: 800; letter-spacing: 1px; }
+  .dir-atelier .status .dot, .dir-atelier .status .stxt { color: #12a06a; font-weight: 600; }
+  .dir-atelier .ent { background: #fafafb; border-top: 1px solid #eeeef2; }
+  .dir-atelier .find-btn { background: #fff; color: #44454f; border: 1px solid #e2e2ea; box-shadow: 0 1px 2px rgba(20,20,40,.05); }
+  .dir-atelier .find-btn:hover { background: #f4f4f8; }
+  .dir-atelier .ent-lbl { color: #12a06a; }
+  .dir-atelier .sect { background: #fafafb; color: #a6a6b2; border-top: 1px solid #eeeef2; }
+  .dir-atelier .stats { background: #fff; }
+  .dir-atelier .bar { background: #ededf2; height: 8px; }
+  .dir-atelier .bar-fill.hp { background: #12a06a; }
+  .dir-atelier .bar-fill.sta { background: #3b82f6; }
+  .dir-atelier .bar-fill.spi { background: #8b5cf6; }
+  .dir-atelier .stat-lbl { color: #6a6a76; font-weight: 600; } .dir-atelier .stat-val { color: #9a9aa6; }
+  .dir-atelier .cheats { background: #fff; gap: 7px; }
+  .dir-atelier .divider::before, .dir-atelier .divider::after { background: #ededf2; }
+  .dir-atelier .divider span { color: #b4b4c0; }
+  .dir-atelier .cheat-btn, .dir-atelier .speed-btn { background: #f6f6f9; color: #3a3b45; border: 1px solid #ededf2; border-radius: 9px; padding: 10px 13px; }
+  .dir-atelier .cheat-btn:hover, .dir-atelier .speed-btn:hover { background: #f0f0f5; }
+  .dir-atelier .cheat-btn .ind, .dir-atelier .speed-btn .ind { color: #c4c4d0; font-size: 11px; }
+  .dir-atelier .cheat-btn.active, .dir-atelier .speed-btn.active { background: #e6f7ef; border-color: #9fe0c2; color: #0c6b46; }
+  .dir-atelier .cheat-btn.active .ind, .dir-atelier .speed-btn.active .ind { color: #12a06a; }
+  .dir-atelier .hk, .dir-atelier .speed-hk { color: #b4b4c0; }
+  .dir-atelier .speed-slider { background: #e3e3ea; }
+  .dir-atelier .speed-slider::-webkit-slider-thumb { background: #12a06a; }
+  .dir-atelier .speed-val { color: #12a06a; }
+  .dir-atelier .tp { background: #fafafb; border-top: 1px solid #eeeef2; }
+  .dir-atelier .live-pos { color: #6a6a76; }
+  .dir-atelier .save-btn { background: #e6f7ef; color: #0c6b46; border: 1px solid #b6e6cd; }
+  .dir-atelier .save-btn:hover { background: #d8f2e4; }
+  .dir-atelier .tp-btn { background: #eef2ff; color: #2952c8; border: 1px solid #c7d6ff; }
+  .dir-atelier .tp-btn:hover { background: #e2eaff; }
+  .dir-atelier .saved { color: #6a6a76; }
+  .dir-atelier .coords label { color: #9a9aa6; font-weight: 600; }
+  .dir-atelier .coords input { background: #fff; color: #3a3b45; border-color: #e2e2ea; }
+  .dir-atelier .coords input:focus { border-color: #12a06a; }
+  .dir-atelier .go-btn { background: #12a06a; color: #fff; border: 1px solid #12a06a; }
+  .dir-atelier .log-wrap { background: #fff; }
+  .dir-atelier .log-title { color: #a6a6b2; }
+  .dir-atelier .log { background: #f6f6f9; border: 1px solid #ededf2; color: #3a3b45; }
+  .dir-atelier .log .ok { color: #12a06a; } .dir-atelier .log .info { color: #6a6a76; } .dir-atelier .log .warn { color: #c08a1e; } .dir-atelier .log .ts { color: #b4b4c0; }
 
-  /* ── Live stat bars ─────────────────────────────────────────────────────── */
-  .stats-panel {
-    background: #111120;
-    padding: 8px 12px 10px;
-    border-bottom: 1px solid #2a2a3a;
-  }
-  .stat-row {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-bottom: 7px;
-  }
-  .stat-row:last-child { margin-bottom: 0; }
-  .stat-label {
-    font-family: 'Consolas', monospace;
-    font-size: 10px;
-    color: #888;
-    width: 26px;
-    flex-shrink: 0;
-    letter-spacing: 0.5px;
-  }
-  .bar-outer {
-    flex: 1;
-    height: 6px;
-    background: #222235;
-    border-radius: 3px;
-    overflow: hidden;
-  }
-  .bar-fill { height: 100%; border-radius: 3px; transition: width .3s ease; }
-  .bar-hp  { background: linear-gradient(90deg, #28a840, #50e870); }
-  .bar-sta { background: linear-gradient(90deg, #2070c8, #40a0f0); }
-  .bar-spi { background: linear-gradient(90deg, #8020c0, #c050f0); }
-  .stat-val {
-    font-family: 'Consolas', monospace;
-    font-size: 9.5px;
-    color: #808098;
-    width: 96px;
-    flex-shrink: 0;
-    text-align: right;
-  }
+  /* ════════════════════════════════════════════════════════════════════ */
+  /*  03 · SANDSWORN — Crimson Desert lore / ornate gold                    */
+  /* ════════════════════════════════════════════════════════════════════ */
+  .dir-sandsworn { --mono: 'JetBrains Mono', monospace; font-family: 'EB Garamond', serif;
+    background: #160f0c; border: 1px solid #4a3526; border-radius: 4px;
+    box-shadow: 0 16px 52px rgba(0,0,0,.72), inset 0 0 0 1px rgba(201,162,75,.16); }
+  .dir-sandsworn .tb { background: #0e0908; border-bottom: 1px solid #3a2a1e; }
+  .dir-sandsworn .tb-text { color: #8a6f4e; letter-spacing: 1px; }
+  .dir-sandsworn .d-close { background: #b0402a; } .dir-sandsworn .d-min { background: #c9a24b; } .dir-sandsworn .d-max { background: #6e7a3a; }
+  .dir-sandsworn .hd { background: linear-gradient(180deg, #1c1310, #160e0c); border-bottom: 1px solid #3a2a1e; position: relative; }
+  .dir-sandsworn .hd::after { content: ''; position: absolute; left: 14px; bottom: -1px; width: 54px; height: 2px; background: linear-gradient(90deg, #c9a24b, transparent); }
+  .dir-sandsworn .hd-title { font-family: 'Cinzel', serif; color: #c9a24b; letter-spacing: 3px; font-weight: 600; }
+  .dir-sandsworn .status .dot { color: #c9a24b; } .dir-sandsworn .status .stxt { color: #b6953f; font-family: 'Cinzel', serif; font-size: 9.5px; letter-spacing: 1.5px; }
+  .dir-sandsworn .ent { background: #160f0d; border-bottom: 1px solid #2a1d16; }
+  .dir-sandsworn .find-btn { background: #2a1a14; color: #d8b878; border: 1px solid #5a4026; font-family: 'Cinzel', serif; font-size: 10.5px; letter-spacing: 1px; }
+  .dir-sandsworn .find-btn:hover { background: #34221a; border-color: #7a5a36; }
+  .dir-sandsworn .ent-lbl { color: #c9a24b; }
+  .dir-sandsworn .sect { background: #140d0b; color: #8a6f4e; font-family: 'Cinzel', serif; letter-spacing: 3px; border-bottom: 1px solid #2a1d16; }
+  .dir-sandsworn .stats { background: #120b09; border-bottom: 1px solid #2a1d16; }
+  .dir-sandsworn .bar { background: #2a1d16; }
+  .dir-sandsworn .bar-fill.hp { background: linear-gradient(90deg, #9c2a24, #d64a2e); }
+  .dir-sandsworn .bar-fill.sta { background: linear-gradient(90deg, #9c6a1e, #e0a83a); }
+  .dir-sandsworn .bar-fill.spi { background: linear-gradient(90deg, #2a6a52, #4aa07a); }
+  .dir-sandsworn .stat-lbl { color: #b09060; font-family: 'Cinzel', serif; font-size: 9px; } .dir-sandsworn .stat-val { color: #9a7e52; }
+  .dir-sandsworn .cheats { background: #140d0b; border-bottom: 1px solid #2a1d16; }
+  .dir-sandsworn .divider::before, .dir-sandsworn .divider::after { background: linear-gradient(90deg, transparent, #5a4026, transparent); }
+  .dir-sandsworn .divider span { color: #8a6f4e; font-family: 'Cinzel', serif; }
+  .dir-sandsworn .cheat-btn, .dir-sandsworn .speed-btn { background: #1f1611; color: #cbb389; border: 1px solid #43301f; font-weight: 600; }
+  .dir-sandsworn .cheat-btn:hover, .dir-sandsworn .speed-btn:hover { background: #271c15; }
+  .dir-sandsworn .cheat-btn .ind, .dir-sandsworn .speed-btn .ind { color: #6a543a; }
+  .dir-sandsworn .cheat-btn.active, .dir-sandsworn .speed-btn.active { background: #3a160f; border-color: #b0402a; color: #f0d2a0; box-shadow: inset 0 0 14px rgba(214,74,46,.3); }
+  .dir-sandsworn .cheat-btn.active .ind, .dir-sandsworn .speed-btn.active .ind { color: #e0884a; }
+  .dir-sandsworn .hk, .dir-sandsworn .speed-hk { color: #6a543a; }
+  .dir-sandsworn .speed-slider { background: #43301f; }
+  .dir-sandsworn .speed-slider::-webkit-slider-thumb { background: #c9a24b; }
+  .dir-sandsworn .speed-val { color: #e0884a; }
+  .dir-sandsworn .tp { background: #160f0d; border-bottom: 1px solid #2a1d16; }
+  .dir-sandsworn .live-pos { color: #7a8a52; }
+  .dir-sandsworn .save-btn { background: #21301a; color: #b6c88a; border: 1px solid #3f5a28; }
+  .dir-sandsworn .save-btn:hover { background: #293c20; }
+  .dir-sandsworn .tp-btn { background: #2a1a14; color: #d8b878; border: 1px solid #5a4026; }
+  .dir-sandsworn .tp-btn:hover { background: #34221a; }
+  .dir-sandsworn .saved { color: #8aa060; }
+  .dir-sandsworn .coords label { color: #b09060; }
+  .dir-sandsworn .coords input { background: #1a120e; color: #d8c2a0; border-color: #43301f; }
+  .dir-sandsworn .coords input:focus { border-color: #c9a24b; }
+  .dir-sandsworn .go-btn { background: #3a160f; color: #e0a060; border: 1px solid #b0402a; font-family: 'Cinzel', serif; font-size: 10px; }
+  .dir-sandsworn .log-wrap { background: #100a08; }
+  .dir-sandsworn .log-title { color: #8a6f4e; font-family: 'Cinzel', serif; }
+  .dir-sandsworn .log { background: #0c0806; border: 1px solid #2a1d16; color: #c9a24b; }
+  .dir-sandsworn .log .ok { color: #c9a24b; } .dir-sandsworn .log .info { color: #8a7a5a; } .dir-sandsworn .log .warn { color: #e0884a; } .dir-sandsworn .log .ts { color: #4a3a28; }
 
-  /* ── Cheats ─────────────────────────────────────────────────────────────── */
-  .cheats {
-    background: #1a1a26;
-    padding: 8px 10px;
-    border-bottom: 1px solid #2a2a3a;
-  }
-
-  /* CSS rule divider inside cheats */
-  .rule-divider {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin: 6px 2px;
-  }
-  .rule-divider::before,
-  .rule-divider::after {
-    content: '';
-    flex: 1;
-    height: 1px;
-    background: #303045;
-  }
-  .rule-divider span {
-    font-size: 9px;
-    font-weight: 700;
-    letter-spacing: 2.5px;
-    color: #484860;
-    text-transform: uppercase;
-  }
-
-  .cheat-row {
-    display: flex;
-    align-items: center;
-    margin-bottom: 5px;
-    gap: 8px;
-  }
-  .cheat-row:last-child { margin-bottom: 0; }
-
-  .cheat-btn {
-    flex: 1;
-    background: #252534;
-    color: #ccc;
-    border: 1px solid #404055;
-    padding: 8px 12px;
-    font-size: 12.5px;
-    font-weight: 600;
-    text-align: left;
-    border-radius: 3px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    transition: background .1s, border-color .1s;
-    user-select: none;
-  }
-  .cheat-btn:hover { background: #2c2c40; }
-  .cheat-btn.active {
-    background: #1a5e2a;
-    border-color: #2a9040;
-    color: #fff;
-  }
-  .cheat-btn.active:hover { background: #206030; }
-  .indicator { font-size: 9px; opacity: 0.7; }
-  .cheat-btn.active .indicator { opacity: 1; color: #60e878; }
-
-  .hotkey {
-    color: #606080;
-    font-size: 11px;
-    min-width: 30px;
-    text-align: right;
-    font-family: 'Consolas', monospace;
-  }
-
-  /* ── Speed panel ─────────────────────────────────────────────────────────── */
-  .speed-row {
-    display: flex;
-    align-items: center;
-    margin-bottom: 5px;
-    gap: 8px;
-  }
-  .speed-btn {
-    background: #252534;
-    color: #ccc;
-    border: 1px solid #404055;
-    padding: 8px 12px;
-    font-size: 12.5px;
-    font-weight: 600;
-    border-radius: 3px;
-    cursor: pointer;
-    width: 200px;
-    flex-shrink: 0;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    transition: background .1s, border-color .1s;
-    user-select: none;
-  }
-  .speed-btn:hover { background: #2c2c40; }
-  .speed-btn.active { background: #1a5e2a; border-color: #2a9040; color: #fff; }
-  .speed-btn.active:hover { background: #206030; }
-  .speed-track {
-    flex: 1;
-    -webkit-appearance: none;
-    height: 3px;
-    background: #404058;
-    border-radius: 2px;
-    outline: none;
-    cursor: pointer;
-  }
-  .speed-track::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    width: 13px; height: 13px;
-    border-radius: 50%;
-    background: #7070b8;
-    cursor: pointer;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.5);
-  }
-  .speed-val {
-    color: #7abaff;
-    font-family: 'Consolas', monospace;
-    font-size: 12px;
-    font-weight: bold;
-    min-width: 32px;
-    text-align: right;
-  }
-  .speed-hk {
-    color: #606080;
-    font-size: 11px;
-    min-width: 30px;
-    text-align: right;
-    font-family: 'Consolas', monospace;
-  }
-
-  /* ── Teleport ─────────────────────────────────────────────────────────────── */
-  .teleport {
-    background: #181826;
-    padding: 9px 12px;
-    border-bottom: 1px solid #2a2a3a;
-  }
-  .live-pos {
-    font-family: 'Consolas', monospace;
-    font-size: 10px;
-    color: #507850;
-    margin-bottom: 9px;
-    letter-spacing: 0.3px;
-  }
-  .tp-buttons { display: flex; gap: 8px; margin-bottom: 7px; }
-  .btn-savepos {
-    flex: 1;
-    background: #1e3e1e; color: #b8d8b8;
-    border: 1px solid #3a6040;
-    padding: 7px 10px; font-size: 11.5px; font-weight: 600;
-    border-radius: 3px; cursor: pointer;
-    transition: background .1s;
-  }
-  .btn-savepos:hover { background: #264826; }
-  .btn-tp {
-    flex: 1;
-    background: #1e1e42; color: #b0b0e0;
-    border: 1px solid #3a3a70;
-    padding: 7px 10px; font-size: 11.5px; font-weight: 600;
-    border-radius: 3px; cursor: pointer;
-    transition: background .1s;
-  }
-  .btn-tp:hover { background: #262650; }
-  .saved-label {
-    font-family: 'Consolas', monospace;
-    font-size: 10px;
-    color: #5a9860;
-    margin-bottom: 7px;
-  }
-  .coord-row {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-  }
-  .coord-row label { color: #888; font-size: 11px; }
-  .coord-row input {
-    background: #22223a; color: #ccc;
-    border: 1px solid #3a3a58;
-    padding: 4px 6px;
-    font-size: 11px;
-    font-family: 'Consolas', monospace;
-    border-radius: 2px;
-    width: 74px;
-    outline: none;
-  }
-  .coord-row input:focus { border-color: #5050a0; }
-  .btn-go {
-    background: #1e1e42; color: #9090d0;
-    border: 1px solid #3a3a70;
-    padding: 4px 10px; font-size: 11.5px; font-weight: bold;
-    border-radius: 3px; cursor: pointer;
-    transition: background .1s;
-    margin-left: 2px;
-  }
-  .btn-go:hover { background: #26265a; }
-
-  /* ── Log ─────────────────────────────────────────────────────────────────── */
-  .log-wrap {
-    padding: 7px 10px 10px;
-    background: #16161f;
-  }
-  .log-title {
-    font-size: 9.5px;
-    font-weight: 700;
-    letter-spacing: 2px;
-    color: #505068;
-    text-transform: uppercase;
-    margin-bottom: 5px;
-  }
-  .log-box {
-    background: #0d0d14;
-    color: #50d860;
-    font-family: 'Consolas', monospace;
-    font-size: 10.5px;
-    padding: 8px;
-    height: 118px;
-    overflow-y: auto;
-    border-radius: 3px;
-    border: 1px solid #222230;
-    line-height: 1.55;
-  }
-  .log-box .ts { color: #405040; }
-  .log-box .ok { color: #50d860; }
-  .log-box .info { color: #6088a0; }
-  .log-box .warn { color: #c8a030; }
+  /* ════════════════════════════════════════════════════════════════════ */
+  /*  04 · OVERRIDE — cyberpunk hacker terminal                             */
+  /* ════════════════════════════════════════════════════════════════════ */
+  .dir-override { --mono: 'JetBrains Mono', monospace; font-family: 'JetBrains Mono', monospace;
+    background: #070809; border: 1px solid #1a3a39; border-radius: 2px;
+    box-shadow: 0 0 0 1px #0e2a29, 0 16px 50px rgba(0,0,0,.82), 0 0 36px rgba(46,230,214,.06); }
+  .dir-override::after { content: ''; position: absolute; inset: 0; z-index: 6; pointer-events: none;
+    background: repeating-linear-gradient(0deg, rgba(46,230,214,.035) 0 1px, transparent 1px 3px); }
+  .dir-override .tb { background: #0a0c0e; border-bottom: 1px solid #11201f; }
+  .dir-override .tb-text { color: #2a6a66; letter-spacing: 1px; }
+  .dir-override .tb-dots span { border-radius: 0; }
+  .dir-override .d-close { background: #ff3da6; } .dir-override .d-min { background: #e0c83a; } .dir-override .d-max { background: #2ee6d6; }
+  .dir-override .hd { background: #070809; border-bottom: 1px solid #11201f; }
+  .dir-override .hd-title { color: #2ee6d6; letter-spacing: 3px; text-shadow: 0 0 9px rgba(46,230,214,.5); }
+  .dir-override .status .dot, .dir-override .status .stxt { color: #2ee6d6; }
+  .dir-override .ent { background: #0a0c0e; border-bottom: 1px solid #11201f; }
+  .dir-override .find-btn { background: transparent; color: #2ee6d6; border: 1px solid #2ee6d6; }
+  .dir-override .find-btn:hover { background: rgba(46,230,214,.12); box-shadow: 0 0 12px rgba(46,230,214,.3); }
+  .dir-override .ent-lbl { color: #2ee6d6; }
+  .dir-override .sect { background: #090b0d; color: #2a6a66; border-bottom: 1px solid #11201f; }
+  .dir-override .stats { background: #070809; border-bottom: 1px solid #11201f; }
+  .dir-override .bar { background: #11201f; border-radius: 0; }
+  .dir-override .bar-fill { border-radius: 0; }
+  .dir-override .bar-fill.hp { background: linear-gradient(90deg, #4ade80, #a3ff5e); box-shadow: 0 0 8px rgba(120,255,120,.4); }
+  .dir-override .bar-fill.sta { background: linear-gradient(90deg, #2ee6d6, #5af0ff); box-shadow: 0 0 8px rgba(46,230,214,.4); }
+  .dir-override .bar-fill.spi { background: linear-gradient(90deg, #ff3da6, #ff7ac6); box-shadow: 0 0 8px rgba(255,61,166,.4); }
+  .dir-override .stat-lbl { color: #2ee6d6; } .dir-override .stat-val { color: #2a8a82; }
+  .dir-override .cheats { background: #090b0d; border-bottom: 1px solid #11201f; }
+  .dir-override .divider::before, .dir-override .divider::after { background: #173433; }
+  .dir-override .divider span { color: #ff3da6; }
+  .dir-override .cheat-btn, .dir-override .speed-btn { background: #0c0f11; color: #8ad6cf; border: 1px solid #173433; border-radius: 2px; }
+  .dir-override .cheat-btn:hover, .dir-override .speed-btn:hover { background: #0f1517; border-color: #235755; }
+  .dir-override .cheat-btn .ind, .dir-override .speed-btn .ind { color: #2a6a66; }
+  .dir-override .cheat-btn.active, .dir-override .speed-btn.active { background: rgba(46,230,214,.12); border-color: #2ee6d6; color: #2ee6d6; box-shadow: 0 0 10px rgba(46,230,214,.25), inset 0 0 10px rgba(46,230,214,.08); }
+  .dir-override .cheat-btn.active .ind, .dir-override .speed-btn.active .ind { color: #2ee6d6; }
+  .dir-override .hk, .dir-override .speed-hk { color: #2a6a66; }
+  .dir-override .speed-slider { background: #173433; }
+  .dir-override .speed-slider::-webkit-slider-thumb { background: #2ee6d6; box-shadow: 0 0 8px rgba(46,230,214,.6); }
+  .dir-override .speed-val { color: #2ee6d6; }
+  .dir-override .tp { background: #0a0c0e; border-bottom: 1px solid #11201f; }
+  .dir-override .live-pos { color: #4ade80; }
+  .dir-override .save-btn { background: rgba(74,222,128,.08); color: #4ade80; border: 1px solid #2a6a3a; }
+  .dir-override .save-btn:hover { background: rgba(74,222,128,.16); }
+  .dir-override .tp-btn { background: rgba(255,61,166,.08); color: #ff3da6; border: 1px solid #6a2a52; }
+  .dir-override .tp-btn:hover { background: rgba(255,61,166,.16); }
+  .dir-override .saved { color: #4ade80; }
+  .dir-override .coords label { color: #2ee6d6; }
+  .dir-override .coords input { background: #0c0f11; color: #8ad6cf; border-color: #173433; }
+  .dir-override .coords input:focus { border-color: #2ee6d6; }
+  .dir-override .go-btn { background: transparent; color: #2ee6d6; border: 1px solid #2ee6d6; }
+  .dir-override .log-wrap { background: #060708; }
+  .dir-override .log-title { color: #2a6a66; }
+  .dir-override .log { background: #050607; border: 1px solid #11201f; color: #2ee6d6; }
+  .dir-override .log .ok { color: #4ade80; } .dir-override .log .info { color: #2a8a82; } .dir-override .log .warn { color: #ff3da6; } .dir-override .log .ts { color: #2a4a48; }
 </style>
 </head>
 <body>
-<div class="window">
-
-  <!-- Title bar -->
-  <div class="titlebar">
-    <span class="titlebar-text">Crimson Desert Trainer</span>
-    <div class="titlebar-btns">
-      <span class="btn-close"></span>
-      <span class="btn-min"></span>
-      <span class="btn-max"></span>
-    </div>
-  </div>
-
-  <!-- Header -->
-  <div class="header">
-    <h1>Crimson Desert Trainer</h1>
-    <div class="status">
-      <span class="dot-attached">●</span>
-      <span class="txt-attached">ATTACHED — CrimsonDesert.exe</span>
-    </div>
-  </div>
-
-  <!-- Entity bar -->
-  <div class="entity-bar">
-    <button class="btn-find" id="btn-find">🔍 Find Entity</button>
-    <span class="entity-found" id="entity-lbl">Entity: FOUND &nbsp;0x7FF812A4C8B0</span>
-  </div>
-
-  <!-- Live stats header -->
-  <div class="section-hdr">Live Stats</div>
-  <div class="stats-panel">
-    <div class="stat-row">
-      <span class="stat-label">HP</span>
-      <div class="bar-outer"><div class="bar-fill bar-hp" id="hp-fill" style="width:100%"></div></div>
-      <span class="stat-val" id="hp-val">5,000 / 5,000</span>
-    </div>
-    <div class="stat-row">
-      <span class="stat-label">STA</span>
-      <div class="bar-outer"><div class="bar-fill bar-sta" id="sta-fill" style="width:72%"></div></div>
-      <span class="stat-val" id="sta-val">2,160 / 3,000</span>
-    </div>
-    <div class="stat-row">
-      <span class="stat-label">SPI</span>
-      <div class="bar-outer"><div class="bar-fill bar-spi" id="spi-fill" style="width:86%"></div></div>
-      <span class="stat-val" id="spi-val">3,870 / 4,500</span>
-    </div>
-  </div>
-
-  <!-- Cheats + Speed all in one panel -->
-  <div class="section-hdr">Cheats</div>
-  <div class="cheats">
-
-    <!-- Stats cheats -->
-    <div class="cheat-row">
-      <button class="cheat-btn active" data-idx="0"><span class="indicator">▶</span> Infinite Health</button>
-      <span class="hotkey">F1</span>
-    </div>
-    <div class="cheat-row">
-      <button class="cheat-btn active" data-idx="1"><span class="indicator">▶</span> Infinite Stamina</button>
-      <span class="hotkey">F2</span>
-    </div>
-    <div class="cheat-row">
-      <button class="cheat-btn" data-idx="2"><span class="indicator">■</span> Infinite Spirit</button>
-      <span class="hotkey">F3</span>
-    </div>
-    <div class="cheat-row">
-      <button class="cheat-btn" data-idx="3"><span class="indicator">■</span> God Mode</button>
-      <span class="hotkey">F4</span>
-    </div>
-
-    <!-- Combat divider -->
-    <div class="rule-divider"><span>Combat</span></div>
-
-    <div class="cheat-row">
-      <button class="cheat-btn active" data-idx="4"><span class="indicator">▶</span> Freeze Position</button>
-      <span class="hotkey">F5</span>
-    </div>
-    <div class="cheat-row">
-      <button class="cheat-btn" data-idx="5"><span class="indicator">■</span> One-Hit Kill</button>
-      <span class="hotkey">F6</span>
-    </div>
-    <div class="cheat-row">
-      <button class="cheat-btn" data-idx="6"><span class="indicator">■</span> No Fall Damage</button>
-      <span class="hotkey">F7</span>
-    </div>
-
-    <!-- Movement divider -->
-    <div class="rule-divider"><span>Movement</span></div>
-
-    <div class="speed-row">
-      <button class="speed-btn" id="speed-btn"><span class="indicator" id="speed-ind">■</span> Speed Multiplier</button>
-      <input type="range" class="speed-track" id="spd" min="2" max="50" value="20">
-      <span class="speed-val" id="spd-val">2.0×</span>
-      <span class="speed-hk">F8</span>
-    </div>
-
-  </div>
-
-  <!-- Teleport -->
-  <div class="section-hdr">Teleport</div>
-  <div class="teleport">
-    <div class="live-pos" id="live-pos">Current:  X=1284.5 &nbsp; Y=320.0 &nbsp; Z=−842.3</div>
-    <div class="tp-buttons">
-      <button class="btn-savepos">📍 Save Position</button>
-      <button class="btn-tp">🚀 Teleport Here</button>
-    </div>
-    <div class="saved-label">Saved:  X=1284.50 &nbsp; Y=320.00 &nbsp; Z=−842.30</div>
-    <div class="coord-row">
-      <label>X:</label><input value="1284.50">
-      <label>Y:</label><input value="320.00">
-      <label>Z:</label><input value="-842.30">
-      <button class="btn-go">Go</button>
-    </div>
-  </div>
-
-  <!-- Log -->
-  <div class="log-wrap">
-    <div class="log-title">Log</div>
-    <div class="log-box" id="log">
-      <span class="ts">[13:04:22]</span> <span class="info">Trainer started. Waiting for Crimson Desert...</span><br>
-      <span class="ts">[13:04:23]</span> <span class="ok">Attached to CrimsonDesert.exe</span><br>
-      <span class="ts">[13:04:23]</span> <span class="info">Hotkeys: F1–F4=Stats &nbsp; F5–F7=Combat &nbsp; F8=Speed</span><br>
-      <span class="ts">[13:04:31]</span> <span class="info">Scanning for player entity...</span><br>
-      <span class="ts">[13:04:33]</span> <span class="ok">Entity found at 0x7FF812A4C8B0</span><br>
-      <span class="ts">[13:04:35]</span> <span class="ok">Infinite Health: ENABLED</span><br>
-      <span class="ts">[13:04:36]</span> <span class="ok">Infinite Stamina: ENABLED</span><br>
-      <span class="ts">[13:04:40]</span> <span class="ok">Freeze Position: ENABLED</span><br>
-      <span class="ts">[13:04:44]</span> <span class="ok">Position saved: X=1284.5 &nbsp; Y=320.0 &nbsp; Z=−842.3</span>
-    </div>
-  </div>
-
-</div><!-- .window -->
+<div class="canvas">
+  <div class="page-title">Crimson Desert Trainer — Theme Switcher</div>
+  <div class="page-sub">pick a theme · live bars, toggles &amp; log are interactive</div>
+  <div class="switcher" id="switcher"></div>
+  <div class="stage" id="stage"></div>
+</div>
 
 <script>
-// ── Toggle cheat buttons ───────────────────────────────────────────────────
-document.querySelectorAll('.cheat-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    const active = btn.classList.toggle('active');
-    btn.querySelector('.indicator').textContent = active ? '▶' : '■';
-    addLog(btn.textContent.trim().replace(/^[▶■]\s*/, '') + ': ' + (active ? 'ENABLED' : 'DISABLED'), active ? 'ok' : 'warn');
-  });
-});
+const WINDOW_HTML = `
+  <div class="tb">
+    <span class="tb-text">Crimson Desert Trainer&nbsp;&nbsp;&middot;&nbsp;&nbsp;BY PARRITO</span>
+    <div class="tb-dots"><span class="d-close"></span><span class="d-min"></span><span class="d-max"></span></div>
+  </div>
+  <div class="hd">
+    <div class="hd-title">Crimson Desert Trainer</div>
+    <div class="status"><span class="dot">&#9679;</span><span class="stxt">ATTACHED &mdash; CrimsonDesert.exe</span></div>
+  </div>
+  <div class="ent">
+    <button class="find-btn">Find Entity</button>
+    <span class="ent-lbl">Entity&nbsp;&nbsp;0x7FF812A4C8B0</span>
+  </div>
+  <div class="sect">Live Stats</div>
+  <div class="stats">
+    <div class="stat"><span class="stat-lbl">HP</span><div class="bar"><div class="bar-fill hp" style="width:100%"></div></div><span class="stat-val v-hp">5,000 / 5,000</span></div>
+    <div class="stat"><span class="stat-lbl">STA</span><div class="bar"><div class="bar-fill sta" style="width:72%"></div></div><span class="stat-val v-sta">2,160 / 3,000</span></div>
+    <div class="stat"><span class="stat-lbl">SPI</span><div class="bar"><div class="bar-fill spi" style="width:86%"></div></div><span class="stat-val v-spi">3,870 / 4,500</span></div>
+  </div>
+  <div class="sect">Cheats</div>
+  <div class="cheats">
+    <div class="crow"><button class="cheat-btn active" data-idx="0"><span class="ind"></span><span>Infinite Health</span></button><span class="hk">F1</span></div>
+    <div class="crow"><button class="cheat-btn active" data-idx="1"><span class="ind"></span><span>Infinite Stamina</span></button><span class="hk">F2</span></div>
+    <div class="crow"><button class="cheat-btn" data-idx="2"><span class="ind"></span><span>Infinite Spirit</span></button><span class="hk">F3</span></div>
+    <div class="crow"><button class="cheat-btn" data-idx="3"><span class="ind"></span><span>God Mode</span></button><span class="hk">F4</span></div>
+    <div class="divider"><span>Combat</span></div>
+    <div class="crow"><button class="cheat-btn active" data-idx="4"><span class="ind"></span><span>Freeze Position</span></button><span class="hk">F5</span></div>
+    <div class="crow"><button class="cheat-btn" data-idx="5"><span class="ind"></span><span>One-Hit Kill</span></button><span class="hk">F6</span></div>
+    <div class="crow"><button class="cheat-btn" data-idx="6"><span class="ind"></span><span>No Fall Damage</span></button><span class="hk">F7</span></div>
+    <div class="divider"><span>Movement</span></div>
+    <div class="speed-row"><button class="speed-btn"><span class="ind"></span><span>Speed Multiplier</span></button><input type="range" class="speed-slider" min="2" max="50" value="20"><span class="speed-val">2.0&times;</span><span class="speed-hk">F8</span></div>
+  </div>
+  <div class="sect">Teleport</div>
+  <div class="tp">
+    <div class="live-pos">Current&nbsp;&nbsp;X=1284.5&nbsp;&nbsp;Y=320.0&nbsp;&nbsp;Z=-842.3</div>
+    <div class="tp-btns"><button class="save-btn">Save Position</button><button class="tp-btn">Teleport Here</button></div>
+    <div class="saved">Saved&nbsp;&nbsp;X=1284.50&nbsp;&nbsp;Y=320.00&nbsp;&nbsp;Z=-842.30</div>
+    <div class="coords"><label>X</label><input value="1284.50"><label>Y</label><input value="320.00"><label>Z</label><input value="-842.30"><button class="go-btn">Go</button></div>
+  </div>
+  <div class="log-wrap">
+    <div class="log-title">Log</div>
+    <div class="log"></div>
+  </div>
+`;
 
-// ── Speed toggle ───────────────────────────────────────────────────────────
-const speedBtn = document.getElementById('speed-btn');
-const speedInd = document.getElementById('speed-ind');
-speedBtn.addEventListener('click', () => {
-  const active = speedBtn.classList.toggle('active');
-  speedInd.textContent = active ? '▶' : '■';
-  addLog('Speed Multiplier (' + document.getElementById('spd-val').textContent + '): ' + (active ? 'ENABLED' : 'DISABLED'), active ? 'ok' : 'warn');
-});
+const DIRECTIONS = [
+  { id: 'forge',     name: '01 · Midnight Forge', sub: 'Refined dark cheat-tool',        on: '\u25B6', off: '\u25A0' },
+  { id: 'atelier',   name: '02 · Atelier',        sub: 'Sleek, minimal, light',          on: '\u25CF', off: '\u25CB' },
+  { id: 'sandsworn', name: '03 · Sandsworn',      sub: 'Crimson Desert lore, ornate',    on: '\u25C6', off: '\u25C7' },
+  { id: 'override',  name: '04 · Override',       sub: 'Cyberpunk hacker terminal',      on: '\u25AE', off: '\u25AF' },
+];
 
-// ── Speed slider ───────────────────────────────────────────────────────────
-const spd    = document.getElementById('spd');
-const spdVal = document.getElementById('spd-val');
-spd.addEventListener('input', () => {
-  spdVal.textContent = (spd.value / 10).toFixed(1) + '×';
-});
+const SEED_LOG = [
+  ['13:04:22', 'Trainer started. Waiting for Crimson Desert\u2026', 'info'],
+  ['13:04:23', 'Attached to CrimsonDesert.exe', 'ok'],
+  ['13:04:23', 'Hotkeys: F1\u2013F4 Stats &nbsp; F5\u2013F7 Combat &nbsp; F8 Speed', 'info'],
+  ['13:04:31', 'Scanning for player entity\u2026', 'info'],
+  ['13:04:33', 'Entity found at 0x7FF812A4C8B0', 'ok'],
+  ['13:04:35', 'Infinite Health: ENABLED', 'ok'],
+  ['13:04:36', 'Infinite Stamina: ENABLED', 'ok'],
+  ['13:04:40', 'Freeze Position: ENABLED', 'ok'],
+];
 
-// ── Live stat bar animation ────────────────────────────────────────────────
-const bars = {
-  hp:  { fill: document.getElementById('hp-fill'),  val: document.getElementById('hp-val'),  pct: 1.00, max: 5000, drain: 0 },
-  sta: { fill: document.getElementById('sta-fill'), val: document.getElementById('sta-val'), pct: 0.72, max: 3000, drain: 0.004 },
-  spi: { fill: document.getElementById('spi-fill'), val: document.getElementById('spi-val'), pct: 0.86, max: 4500, drain: 0.003 },
-};
+const SWATCH = { forge: '#e0383c', atelier: '#12a06a', sandsworn: '#c9a24b', override: '#2ee6d6' };
 
-function updateBars() {
-  Object.values(bars).forEach(b => {
-    // HP drains if Infinite Health is off, otherwise stays full
-    if (b === bars.hp) {
-      const healthOn = document.querySelector('[data-idx="0"]').classList.contains('active');
-      b.drain = healthOn ? 0 : 0.002;
-    }
-    b.pct = Math.max(0.03, b.pct - b.drain);
-    if (b.pct <= 0.03) b.pct = 1.0;
-    b.fill.style.width = (b.pct * 100).toFixed(1) + '%';
-    b.val.textContent  = Math.round(b.pct * b.max).toLocaleString() + ' / ' + b.max.toLocaleString();
-  });
+const stage = document.getElementById('stage');
+const switcher = document.getElementById('switcher');
+let current = null;
 
-  // Simulate position drifting when Freeze Position is OFF
-  if (!document.querySelector('[data-idx="4"]').classList.contains('active')) {
-    const t = Date.now() / 800;
-    document.getElementById('live-pos').textContent =
-      'Current:  X=' + (1284.5 + Math.sin(t) * 5).toFixed(1) +
-      '  Y=' + (320.0 + Math.cos(t * 0.7) * 2).toFixed(1) +
-      '  Z=−' + (842.3 + Math.sin(t * 1.3) * 3).toFixed(1);
-  } else {
-    document.getElementById('live-pos').textContent = 'Current:  X=1284.5  Y=320.0  Z=−842.3  [FROZEN]';
-  }
+function buildWindow(d) {
+  const win = document.createElement('div');
+  win.className = 'trainer dir-' + d.id;
+  win.dataset.on = d.on;
+  win.dataset.off = d.off;
+  win.innerHTML = WINDOW_HTML;
+  return win;
 }
 
-setInterval(updateBars, 300);
+function selectTheme(d) {
+  stage.innerHTML = '';
+  const win = buildWindow(d);
+  stage.appendChild(win);
+  initTrainer(win, d);
+  switcher.querySelectorAll('.theme-btn').forEach(b => b.classList.toggle('sel', b.dataset.id === d.id));
+  localStorage.setItem('cdt-theme', d.id);
+}
 
-// ── Log helper ─────────────────────────────────────────────────────────────
-function addLog(msg, cls = 'info') {
-  const log = document.getElementById('log');
-  const now = new Date();
-  const ts  = String(now.getHours()).padStart(2,'0') + ':' +
-              String(now.getMinutes()).padStart(2,'0') + ':' +
-              String(now.getSeconds()).padStart(2,'0');
-  log.innerHTML += '<br><span class="ts">[' + ts + ']</span> <span class="' + cls + '">' + msg + '</span>';
+DIRECTIONS.forEach((d, i) => {
+  const btn = document.createElement('button');
+  btn.className = 'theme-btn';
+  btn.dataset.id = d.id;
+  btn.innerHTML = '<span class="swatch" style="background:' + SWATCH[d.id] + '"></span>' + d.name.replace(/^\d+\s*·\s*/, '');
+  btn.addEventListener('click', () => selectTheme(d));
+  switcher.appendChild(btn);
+});
+
+const saved = localStorage.getItem('cdt-theme');
+selectTheme(DIRECTIONS.find(d => d.id === saved) || DIRECTIONS[0]);
+
+function nowStamp() {
+  const n = new Date();
+  return String(n.getHours()).padStart(2,'0') + ':' + String(n.getMinutes()).padStart(2,'0') + ':' + String(n.getSeconds()).padStart(2,'0');
+}
+
+function initTrainer(win, d) {
+  const on = win.dataset.on, off = win.dataset.off;
+  const log = win.querySelector('.log');
+
+  function addLog(msg, cls) {
+    log.innerHTML += '<br><span class="ts">[' + nowStamp() + ']</span> <span class="' + (cls||'info') + '">' + msg + '</span>';
+    log.scrollTop = log.scrollHeight;
+  }
+  // seed log
+  log.innerHTML = SEED_LOG.map(l => '<span class="ts">[' + l[0] + ']</span> <span class="' + l[2] + '">' + l[1] + '</span>').join('<br>');
   log.scrollTop = log.scrollHeight;
+
+  // cheat toggles
+  win.querySelectorAll('.cheat-btn').forEach(btn => {
+    const ind = btn.querySelector('.ind');
+    ind.textContent = btn.classList.contains('active') ? on : off;
+    const name = btn.querySelector('span:last-child').textContent;
+    btn.addEventListener('click', () => {
+      const active = btn.classList.toggle('active');
+      ind.textContent = active ? on : off;
+      addLog(name + ': ' + (active ? 'ENABLED' : 'DISABLED'), active ? 'ok' : 'warn');
+    });
+  });
+
+  // speed
+  const speedBtn = win.querySelector('.speed-btn');
+  const speedInd = speedBtn.querySelector('.ind');
+  const slider = win.querySelector('.speed-slider');
+  const sval = win.querySelector('.speed-val');
+  speedInd.textContent = off;
+  speedBtn.addEventListener('click', () => {
+    const active = speedBtn.classList.toggle('active');
+    speedInd.textContent = active ? on : off;
+    addLog('Speed Multiplier (' + sval.textContent + '): ' + (active ? 'ENABLED' : 'DISABLED'), active ? 'ok' : 'warn');
+  });
+  slider.addEventListener('input', () => { sval.textContent = (slider.value / 10).toFixed(1) + '\u00D7'; });
+
+  // entity / teleport buttons
+  win.querySelector('.find-btn').addEventListener('click', () => addLog('Entity re-scan \u2192 0x7FF812A4C8B0', 'ok'));
+  win.querySelector('.save-btn').addEventListener('click', () => addLog('Position saved: X=1284.5 Y=320.0 Z=-842.3', 'ok'));
+  win.querySelector('.tp-btn').addEventListener('click', () => addLog('Teleported to saved position', 'ok'));
+  win.querySelector('.go-btn').addEventListener('click', () => {
+    const v = win.querySelectorAll('.coords input');
+    addLog('Teleport \u2192 X=' + v[0].value + ' Y=' + v[1].value + ' Z=' + v[2].value, 'ok');
+  });
+
+  // live bars
+  const state = {
+    hp:  { fill: win.querySelector('.hp'),  val: win.querySelector('.v-hp'),  pct: 1.00, max: 5000 },
+    sta: { fill: win.querySelector('.sta'), val: win.querySelector('.v-sta'), pct: 0.72, max: 3000, drain: 0.012 },
+    spi: { fill: win.querySelector('.spi'), val: win.querySelector('.v-spi'), pct: 0.86, max: 4500, drain: 0.009 },
+  };
+  const livePos = win.querySelector('.live-pos');
+
+  setInterval(() => {
+    const healthOn  = win.querySelector('[data-idx="0"]').classList.contains('active');
+    const staminaOn = win.querySelector('[data-idx="1"]').classList.contains('active');
+    const spiritOn  = win.querySelector('[data-idx="2"]').classList.contains('active');
+    const frozen    = win.querySelector('[data-idx="4"]').classList.contains('active');
+
+    state.hp.pct  = healthOn  ? 1.0 : Math.max(0.06, state.hp.pct - 0.02);
+    if (!healthOn && state.hp.pct <= 0.06) state.hp.pct = 1.0;
+    state.sta.pct = staminaOn ? 1.0 : Math.max(0.06, state.sta.pct - state.sta.drain);
+    if (!staminaOn && state.sta.pct <= 0.06) state.sta.pct = 1.0;
+    state.spi.pct = spiritOn  ? 1.0 : Math.max(0.06, state.spi.pct - state.spi.drain);
+    if (!spiritOn && state.spi.pct <= 0.06) state.spi.pct = 1.0;
+
+    ['hp','sta','spi'].forEach(k => {
+      const b = state[k];
+      b.fill.style.width = (b.pct * 100).toFixed(1) + '%';
+      b.val.innerHTML = Math.round(b.pct * b.max).toLocaleString() + ' / ' + b.max.toLocaleString();
+    });
+
+    if (frozen) {
+      livePos.innerHTML = 'Current&nbsp;&nbsp;X=1284.5&nbsp;&nbsp;Y=320.0&nbsp;&nbsp;Z=-842.3&nbsp;&nbsp;[FROZEN]';
+    } else {
+      const t = Date.now() / 800;
+      livePos.innerHTML = 'Current&nbsp;&nbsp;X=' + (1284.5 + Math.sin(t)*5).toFixed(1) +
+        '&nbsp;&nbsp;Y=' + (320.0 + Math.cos(t*0.7)*2).toFixed(1) +
+        '&nbsp;&nbsp;Z=-' + (842.3 + Math.sin(t*1.3)*3).toFixed(1);
+    }
+  }, 320);
 }
 </script>
 </body>
