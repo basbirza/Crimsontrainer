@@ -6,229 +6,379 @@
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body {
-    background: #1a1a2a;
+    background: #13131f;
     display: flex;
     justify-content: center;
     align-items: flex-start;
     min-height: 100vh;
-    padding: 30px 0;
+    padding: 30px 0 50px;
     font-family: 'Segoe UI', sans-serif;
   }
 
   .window {
     width: 420px;
-    background: #1e1e28;
-    border: 1px solid #444;
-    border-radius: 4px;
+    background: #1e1e2a;
+    border: 1px solid #3a3a50;
+    border-radius: 6px;
     overflow: hidden;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.7);
+    box-shadow: 0 12px 48px rgba(0,0,0,0.8);
   }
 
   /* ── Title bar ─────────────────────────────────────────────────────────── */
   .titlebar {
-    background: #1a1a28;
-    padding: 6px 10px;
+    background: #16161f;
+    padding: 7px 10px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    border-bottom: 1px solid #333;
+    border-bottom: 1px solid #2a2a3a;
+    user-select: none;
   }
-  .titlebar-text { color: #aaa; font-size: 12px; }
+  .titlebar-text { color: #888; font-size: 11px; letter-spacing: 0.5px; }
   .titlebar-btns { display: flex; gap: 6px; }
-  .titlebar-btns span { width: 12px; height: 12px; border-radius: 50%; display: inline-block; }
-  .btn-close  { background: #ff5f57; }
-  .btn-min    { background: #ffbd2e; }
-  .btn-max    { background: #28c940; }
+  .titlebar-btns span {
+    width: 12px; height: 12px; border-radius: 50%; display: inline-block;
+    cursor: pointer;
+  }
+  .btn-close { background: #ff5f57; }
+  .btn-min   { background: #ffbd2e; }
+  .btn-max   { background: #28c940; }
 
   /* ── Header ─────────────────────────────────────────────────────────────── */
-  .header { background: #14141e; padding: 10px 12px; }
-  .header h1 { color: #c83232; font-size: 16px; font-weight: bold; letter-spacing: 1px; }
-  .status { font-size: 12px; margin-top: 4px; }
-  .attached { color: #32c850; }
+  .header {
+    background: #11111a;
+    padding: 12px 14px 10px;
+    border-bottom: 1px solid #2a2a3a;
+  }
+  .header h1 {
+    color: #c83030;
+    font-size: 15px;
+    font-weight: bold;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+  .status {
+    font-size: 11px;
+    margin-top: 5px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .dot-attached { color: #32c850; font-size: 13px; }
+  .txt-attached { color: #32c850; }
+  .dot-detached { color: #c83030; font-size: 13px; }
+  .txt-detached { color: #c83030; }
 
   /* ── Entity bar ─────────────────────────────────────────────────────────── */
   .entity-bar {
-    background: #19192a;
-    padding: 10px 12px;
+    background: #181826;
+    padding: 9px 12px;
     display: flex;
     align-items: center;
     gap: 12px;
     border-bottom: 1px solid #2a2a3a;
   }
   .btn-find {
-    background: #28284a; color: #fff;
-    border: 1px solid #505080;
-    padding: 6px 12px; font-size: 12px; font-weight: bold;
-    border-radius: 3px; cursor: pointer; white-space: nowrap;
+    background: #252545;
+    color: #ccc;
+    border: 1px solid #4a4a78;
+    padding: 5px 11px;
+    font-size: 12px;
+    font-weight: 600;
+    border-radius: 3px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background .15s;
   }
-  .entity-status { font-size: 12px; color: #32c850; }
+  .btn-find:hover { background: #2e2e5a; }
+  .entity-found  { font-size: 11.5px; color: #30c848; font-family: 'Consolas', monospace; }
+  .entity-lost   { font-size: 11.5px; color: #c83030; font-family: 'Consolas', monospace; }
+
+  /* ── Section header label ───────────────────────────────────────────────── */
+  .section-hdr {
+    padding: 7px 12px 4px;
+    font-size: 9.5px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: #505068;
+    text-transform: uppercase;
+    border-bottom: 1px solid #252535;
+    background: #1a1a26;
+  }
 
   /* ── Live stat bars ─────────────────────────────────────────────────────── */
   .stats-panel {
-    background: #12121c;
-    padding: 8px 10px 10px;
+    background: #111120;
+    padding: 8px 12px 10px;
     border-bottom: 1px solid #2a2a3a;
   }
   .stat-row {
     display: flex;
     align-items: center;
     gap: 8px;
-    margin-bottom: 6px;
+    margin-bottom: 7px;
   }
   .stat-row:last-child { margin-bottom: 0; }
   .stat-label {
     font-family: 'Consolas', monospace;
-    font-size: 11px;
-    color: #aaa;
-    width: 28px;
+    font-size: 10px;
+    color: #888;
+    width: 26px;
     flex-shrink: 0;
+    letter-spacing: 0.5px;
   }
   .bar-outer {
     flex: 1;
-    height: 7px;
-    background: #282838;
-    border-radius: 2px;
+    height: 6px;
+    background: #222235;
+    border-radius: 3px;
     overflow: hidden;
   }
-  .bar-fill {
-    height: 100%;
-    border-radius: 2px;
-    transition: width 0.3s ease;
-  }
-  .bar-hp   { background: #28c850; width: 100%; }
-  .bar-sta  { background: #2888c8; width: 72%; }
-  .bar-spi  { background: #a028d8; width: 86%; }
+  .bar-fill { height: 100%; border-radius: 3px; transition: width .3s ease; }
+  .bar-hp  { background: linear-gradient(90deg, #28a840, #50e870); }
+  .bar-sta { background: linear-gradient(90deg, #2070c8, #40a0f0); }
+  .bar-spi { background: linear-gradient(90deg, #8020c0, #c050f0); }
   .stat-val {
     font-family: 'Consolas', monospace;
-    font-size: 10px;
-    color: #aaa;
-    width: 100px;
+    font-size: 9.5px;
+    color: #808098;
+    width: 96px;
     flex-shrink: 0;
     text-align: right;
   }
 
   /* ── Cheats ─────────────────────────────────────────────────────────────── */
   .cheats {
-    background: #1e1e28;
-    padding: 10px;
+    background: #1a1a26;
+    padding: 8px 10px;
     border-bottom: 1px solid #2a2a3a;
   }
-  .section-divider {
-    text-align: center;
-    color: #505068;
-    font-size: 10px;
-    letter-spacing: 2px;
-    padding: 5px 0 3px;
-  }
-  .cheat-row {
-    display: flex;
-    align-items: center;
-    margin-bottom: 6px;
-    gap: 10px;
-  }
-  .cheat-row:last-child { margin-bottom: 0; }
-  .cheat-btn {
-    flex: 1;
-    background: #2d2d3c; color: #fff;
-    border: 1px solid #505064;
-    padding: 8px 12px; font-size: 13px; font-weight: bold;
-    text-align: left; border-radius: 3px; cursor: pointer;
-    display: flex; align-items: center; gap: 8px;
-  }
-  .cheat-btn.active   { background: #1e6e32; border-color: #28a84a; }
-  .cheat-btn .indicator { font-size: 10px; color: #888; }
-  .cheat-btn.active .indicator { color: #80ff80; }
-  .hotkey { color: #8888b4; font-size: 12px; min-width: 32px; text-align: right; }
 
-  /* ── Speed panel ─────────────────────────────────────────────────────────── */
-  .speed-panel {
-    background: #19192a;
-    padding: 10px 12px;
-    border-bottom: 1px solid #2a2a3a;
+  /* CSS rule divider inside cheats */
+  .rule-divider {
     display: flex;
     align-items: center;
     gap: 8px;
+    margin: 6px 2px;
+  }
+  .rule-divider::before,
+  .rule-divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: #303045;
+  }
+  .rule-divider span {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 2.5px;
+    color: #484860;
+    text-transform: uppercase;
+  }
+
+  .cheat-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 5px;
+    gap: 8px;
+  }
+  .cheat-row:last-child { margin-bottom: 0; }
+
+  .cheat-btn {
+    flex: 1;
+    background: #252534;
+    color: #ccc;
+    border: 1px solid #404055;
+    padding: 8px 12px;
+    font-size: 12.5px;
+    font-weight: 600;
+    text-align: left;
+    border-radius: 3px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: background .1s, border-color .1s;
+    user-select: none;
+  }
+  .cheat-btn:hover { background: #2c2c40; }
+  .cheat-btn.active {
+    background: #1a5e2a;
+    border-color: #2a9040;
+    color: #fff;
+  }
+  .cheat-btn.active:hover { background: #206030; }
+  .indicator { font-size: 9px; opacity: 0.7; }
+  .cheat-btn.active .indicator { opacity: 1; color: #60e878; }
+
+  .hotkey {
+    color: #606080;
+    font-size: 11px;
+    min-width: 30px;
+    text-align: right;
+    font-family: 'Consolas', monospace;
+  }
+
+  /* ── Speed panel ─────────────────────────────────────────────────────────── */
+  .speed-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 5px;
+    gap: 8px;
   }
   .speed-btn {
-    background: #2d2d3c; color: #fff;
-    border: 1px solid #505064;
-    padding: 8px 12px; font-size: 12px; font-weight: bold;
-    border-radius: 3px; cursor: pointer;
-    white-space: nowrap; min-width: 158px;
+    background: #252534;
+    color: #ccc;
+    border: 1px solid #404055;
+    padding: 8px 12px;
+    font-size: 12.5px;
+    font-weight: 600;
+    border-radius: 3px;
+    cursor: pointer;
+    width: 200px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: background .1s, border-color .1s;
+    user-select: none;
   }
-  .speed-btn.active { background: #1e6e32; border-color: #28a84a; }
+  .speed-btn:hover { background: #2c2c40; }
+  .speed-btn.active { background: #1a5e2a; border-color: #2a9040; color: #fff; }
+  .speed-btn.active:hover { background: #206030; }
   .speed-track {
     flex: 1;
     -webkit-appearance: none;
-    height: 4px; background: #484860; border-radius: 2px; outline: none;
+    height: 3px;
+    background: #404058;
+    border-radius: 2px;
+    outline: none;
+    cursor: pointer;
   }
   .speed-track::-webkit-slider-thumb {
     -webkit-appearance: none;
-    width: 14px; height: 14px;
-    border-radius: 50%; background: #8080c8; cursor: pointer;
+    width: 13px; height: 13px;
+    border-radius: 50%;
+    background: #7070b8;
+    cursor: pointer;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.5);
   }
   .speed-val {
-    color: #80c8ff; font-family: 'Consolas', monospace; font-size: 12px;
-    font-weight: bold; min-width: 34px; text-align: right;
+    color: #7abaff;
+    font-family: 'Consolas', monospace;
+    font-size: 12px;
+    font-weight: bold;
+    min-width: 32px;
+    text-align: right;
   }
-  .speed-hk { color: #8888b4; font-size: 12px; }
+  .speed-hk {
+    color: #606080;
+    font-size: 11px;
+    min-width: 30px;
+    text-align: right;
+    font-family: 'Consolas', monospace;
+  }
 
   /* ── Teleport ─────────────────────────────────────────────────────────────── */
   .teleport {
-    background: #1c1c2a;
-    padding: 10px 12px;
+    background: #181826;
+    padding: 9px 12px;
     border-bottom: 1px solid #2a2a3a;
   }
-  .live-coords {
+  .live-pos {
     font-family: 'Consolas', monospace;
-    font-size: 10.5px;
-    color: #64a864;
-    margin-bottom: 10px;
+    font-size: 10px;
+    color: #507850;
+    margin-bottom: 9px;
+    letter-spacing: 0.3px;
   }
-  .teleport-title {
-    color: #8888b4; font-size: 11px; font-weight: bold;
-    letter-spacing: 1px; text-transform: uppercase; margin-bottom: 8px;
-  }
-  .tp-row1 { display: flex; gap: 10px; margin-bottom: 8px; }
+  .tp-buttons { display: flex; gap: 8px; margin-bottom: 7px; }
   .btn-savepos {
-    background: #234523; color: #fff; border: 1px solid #507850;
-    padding: 7px 12px; font-size: 12px; font-weight: bold;
-    border-radius: 3px; cursor: pointer; flex: 1;
-  }
-  .btn-tp {
-    background: #232354; color: #fff; border: 1px solid #505090;
-    padding: 7px 12px; font-size: 12px; font-weight: bold;
-    border-radius: 3px; cursor: pointer; flex: 1;
-  }
-  .saved-coords { font-size: 11px; color: #80cc80; font-family: 'Consolas', monospace; margin-bottom: 8px; }
-  .tp-row2 { display: flex; align-items: center; gap: 6px; }
-  .tp-row2 label { color: #aaa; font-size: 12px; min-width: 16px; }
-  .tp-row2 input {
-    background: #28283a; color: #fff; border: 1px solid #484860;
-    padding: 4px 6px; font-size: 12px; font-family: 'Consolas', monospace;
-    border-radius: 2px; width: 78px; outline: none;
-  }
-  .btn-go {
-    background: #232354; color: #fff; border: 1px solid #505090;
-    padding: 4px 10px; font-size: 12px; font-weight: bold;
+    flex: 1;
+    background: #1e3e1e; color: #b8d8b8;
+    border: 1px solid #3a6040;
+    padding: 7px 10px; font-size: 11.5px; font-weight: 600;
     border-radius: 3px; cursor: pointer;
+    transition: background .1s;
   }
+  .btn-savepos:hover { background: #264826; }
+  .btn-tp {
+    flex: 1;
+    background: #1e1e42; color: #b0b0e0;
+    border: 1px solid #3a3a70;
+    padding: 7px 10px; font-size: 11.5px; font-weight: 600;
+    border-radius: 3px; cursor: pointer;
+    transition: background .1s;
+  }
+  .btn-tp:hover { background: #262650; }
+  .saved-label {
+    font-family: 'Consolas', monospace;
+    font-size: 10px;
+    color: #5a9860;
+    margin-bottom: 7px;
+  }
+  .coord-row {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .coord-row label { color: #888; font-size: 11px; }
+  .coord-row input {
+    background: #22223a; color: #ccc;
+    border: 1px solid #3a3a58;
+    padding: 4px 6px;
+    font-size: 11px;
+    font-family: 'Consolas', monospace;
+    border-radius: 2px;
+    width: 74px;
+    outline: none;
+  }
+  .coord-row input:focus { border-color: #5050a0; }
+  .btn-go {
+    background: #1e1e42; color: #9090d0;
+    border: 1px solid #3a3a70;
+    padding: 4px 10px; font-size: 11.5px; font-weight: bold;
+    border-radius: 3px; cursor: pointer;
+    transition: background .1s;
+    margin-left: 2px;
+  }
+  .btn-go:hover { background: #26265a; }
 
   /* ── Log ─────────────────────────────────────────────────────────────────── */
-  .log-group { padding: 6px 10px; }
-  .log-title { color: #888; font-size: 11px; margin-bottom: 4px; }
-  .log-box {
-    background: #0f0f14; color: #80ff80;
-    font-family: 'Consolas', monospace; font-size: 11px;
-    padding: 8px; height: 120px; overflow-y: auto;
-    border-radius: 2px; line-height: 1.5;
+  .log-wrap {
+    padding: 7px 10px 10px;
+    background: #16161f;
   }
+  .log-title {
+    font-size: 9.5px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: #505068;
+    text-transform: uppercase;
+    margin-bottom: 5px;
+  }
+  .log-box {
+    background: #0d0d14;
+    color: #50d860;
+    font-family: 'Consolas', monospace;
+    font-size: 10.5px;
+    padding: 8px;
+    height: 118px;
+    overflow-y: auto;
+    border-radius: 3px;
+    border: 1px solid #222230;
+    line-height: 1.55;
+  }
+  .log-box .ts { color: #405040; }
+  .log-box .ok { color: #50d860; }
+  .log-box .info { color: #6088a0; }
+  .log-box .warn { color: #c8a030; }
 </style>
 </head>
 <body>
 <div class="window">
 
-  <!-- Titlebar -->
+  <!-- Title bar -->
   <div class="titlebar">
     <span class="titlebar-text">Crimson Desert Trainer</span>
     <div class="titlebar-btns">
@@ -240,88 +390,99 @@
 
   <!-- Header -->
   <div class="header">
-    <h1>CRIMSON DESERT TRAINER</h1>
-    <div class="status attached">● ATTACHED</div>
+    <h1>Crimson Desert Trainer</h1>
+    <div class="status">
+      <span class="dot-attached">●</span>
+      <span class="txt-attached">ATTACHED — CrimsonDesert.exe</span>
+    </div>
   </div>
 
   <!-- Entity bar -->
   <div class="entity-bar">
-    <button class="btn-find">🔍 Find Entity</button>
-    <span class="entity-status">Entity: FOUND &nbsp; 0x7FF812A4C8B0</span>
+    <button class="btn-find" id="btn-find">🔍 Find Entity</button>
+    <span class="entity-found" id="entity-lbl">Entity: FOUND &nbsp;0x7FF812A4C8B0</span>
   </div>
 
-  <!-- Live stat bars -->
+  <!-- Live stats header -->
+  <div class="section-hdr">Live Stats</div>
   <div class="stats-panel">
     <div class="stat-row">
       <span class="stat-label">HP</span>
-      <div class="bar-outer"><div class="bar-fill bar-hp" id="hp-fill"></div></div>
+      <div class="bar-outer"><div class="bar-fill bar-hp" id="hp-fill" style="width:100%"></div></div>
       <span class="stat-val" id="hp-val">5,000 / 5,000</span>
     </div>
     <div class="stat-row">
       <span class="stat-label">STA</span>
-      <div class="bar-outer"><div class="bar-fill bar-sta" id="sta-fill"></div></div>
+      <div class="bar-outer"><div class="bar-fill bar-sta" id="sta-fill" style="width:72%"></div></div>
       <span class="stat-val" id="sta-val">2,160 / 3,000</span>
     </div>
     <div class="stat-row">
       <span class="stat-label">SPI</span>
-      <div class="bar-outer"><div class="bar-fill bar-spi" id="spi-fill"></div></div>
+      <div class="bar-outer"><div class="bar-fill bar-spi" id="spi-fill" style="width:86%"></div></div>
       <span class="stat-val" id="spi-val">3,870 / 4,500</span>
     </div>
   </div>
 
-  <!-- Cheat buttons -->
+  <!-- Cheats + Speed all in one panel -->
+  <div class="section-hdr">Cheats</div>
   <div class="cheats">
+
+    <!-- Stats cheats -->
     <div class="cheat-row">
-      <button class="cheat-btn active"><span class="indicator">▶</span> Infinite Health</button>
-      <span class="hotkey">[F1]</span>
+      <button class="cheat-btn active" data-idx="0"><span class="indicator">▶</span> Infinite Health</button>
+      <span class="hotkey">F1</span>
     </div>
     <div class="cheat-row">
-      <button class="cheat-btn active"><span class="indicator">▶</span> Infinite Stamina</button>
-      <span class="hotkey">[F2]</span>
+      <button class="cheat-btn active" data-idx="1"><span class="indicator">▶</span> Infinite Stamina</button>
+      <span class="hotkey">F2</span>
     </div>
     <div class="cheat-row">
-      <button class="cheat-btn"><span class="indicator">■</span> Infinite Spirit</button>
-      <span class="hotkey">[F3]</span>
+      <button class="cheat-btn" data-idx="2"><span class="indicator">■</span> Infinite Spirit</button>
+      <span class="hotkey">F3</span>
     </div>
     <div class="cheat-row">
-      <button class="cheat-btn"><span class="indicator">■</span> God Mode</button>
-      <span class="hotkey">[F4]</span>
+      <button class="cheat-btn" data-idx="3"><span class="indicator">■</span> God Mode</button>
+      <span class="hotkey">F4</span>
     </div>
 
-    <div class="section-divider">────────────── COMBAT ──────────────</div>
+    <!-- Combat divider -->
+    <div class="rule-divider"><span>Combat</span></div>
 
     <div class="cheat-row">
-      <button class="cheat-btn active"><span class="indicator">▶</span> Freeze Position</button>
-      <span class="hotkey">[F5]</span>
+      <button class="cheat-btn active" data-idx="4"><span class="indicator">▶</span> Freeze Position</button>
+      <span class="hotkey">F5</span>
     </div>
     <div class="cheat-row">
-      <button class="cheat-btn"><span class="indicator">■</span> One-Hit Kill</button>
-      <span class="hotkey">[F6]</span>
+      <button class="cheat-btn" data-idx="5"><span class="indicator">■</span> One-Hit Kill</button>
+      <span class="hotkey">F6</span>
     </div>
     <div class="cheat-row">
-      <button class="cheat-btn"><span class="indicator">■</span> No Fall Damage</button>
-      <span class="hotkey">[F7]</span>
+      <button class="cheat-btn" data-idx="6"><span class="indicator">■</span> No Fall Damage</button>
+      <span class="hotkey">F7</span>
     </div>
-  </div>
 
-  <!-- Speed panel -->
-  <div class="speed-panel">
-    <button class="speed-btn">⚡ Speed Multiplier</button>
-    <input type="range" class="speed-track" min="2" max="50" value="20" id="spd">
-    <span class="speed-val" id="spd-val">2.0×</span>
-    <span class="speed-hk">[F8]</span>
+    <!-- Movement divider -->
+    <div class="rule-divider"><span>Movement</span></div>
+
+    <div class="speed-row">
+      <button class="speed-btn" id="speed-btn"><span class="indicator" id="speed-ind">■</span> Speed Multiplier</button>
+      <input type="range" class="speed-track" id="spd" min="2" max="50" value="20">
+      <span class="speed-val" id="spd-val">2.0×</span>
+      <span class="speed-hk">F8</span>
+    </div>
+
   </div>
 
   <!-- Teleport -->
+  <div class="section-hdr">Teleport</div>
   <div class="teleport">
-    <div class="live-coords">Current:  X=1284.5 &nbsp; Y=320.0 &nbsp; Z=-842.3</div>
-    <div class="teleport-title">Teleport</div>
-    <div class="tp-row1">
+    <div class="live-pos" id="live-pos">Current:  X=1284.5 &nbsp; Y=320.0 &nbsp; Z=−842.3</div>
+    <div class="tp-buttons">
       <button class="btn-savepos">📍 Save Position</button>
-      <button class="btn-tp">🚀 Teleport</button>
+      <button class="btn-tp">🚀 Teleport Here</button>
     </div>
-    <div class="saved-coords">Saved: X=1284.5&nbsp;&nbsp;Y=320.0&nbsp;&nbsp;Z=-842.3</div>
-    <div class="tp-row2">
+    <div class="saved-label">Saved:  X=1284.50 &nbsp; Y=320.00 &nbsp; Z=−842.30</div>
+    <div class="coord-row">
       <label>X:</label><input value="1284.50">
       <label>Y:</label><input value="320.00">
       <label>Z:</label><input value="-842.30">
@@ -330,51 +491,93 @@
   </div>
 
   <!-- Log -->
-  <div class="log-group">
+  <div class="log-wrap">
     <div class="log-title">Log</div>
-    <div class="log-box">
-[13:04:22] Trainer started. Waiting for Crimson Desert...<br>
-[13:04:23] Attached to CrimsonDesert. Click 'Find Entity' to enable cheats.<br>
-[13:04:23] Hotkeys: F1=Health  F2=Stamina  F3=Spirit  F4=GodMode  F5=Freeze  F6=OHK  F7=NoFall  F8=Speed<br>
-[13:04:31] Scanning for player entity...<br>
-[13:04:33] Entity found at 0x7FF812A4C8B0<br>
-[13:04:35] Infinite Health: ENABLED<br>
-[13:04:36] Infinite Stamina: ENABLED<br>
-[13:04:40] Freeze Position: ENABLED<br>
-[13:04:44] Position saved: X=1284.5  Y=320.0  Z=-842.3
+    <div class="log-box" id="log">
+      <span class="ts">[13:04:22]</span> <span class="info">Trainer started. Waiting for Crimson Desert...</span><br>
+      <span class="ts">[13:04:23]</span> <span class="ok">Attached to CrimsonDesert.exe</span><br>
+      <span class="ts">[13:04:23]</span> <span class="info">Hotkeys: F1–F4=Stats &nbsp; F5–F7=Combat &nbsp; F8=Speed</span><br>
+      <span class="ts">[13:04:31]</span> <span class="info">Scanning for player entity...</span><br>
+      <span class="ts">[13:04:33]</span> <span class="ok">Entity found at 0x7FF812A4C8B0</span><br>
+      <span class="ts">[13:04:35]</span> <span class="ok">Infinite Health: ENABLED</span><br>
+      <span class="ts">[13:04:36]</span> <span class="ok">Infinite Stamina: ENABLED</span><br>
+      <span class="ts">[13:04:40]</span> <span class="ok">Freeze Position: ENABLED</span><br>
+      <span class="ts">[13:04:44]</span> <span class="ok">Position saved: X=1284.5 &nbsp; Y=320.0 &nbsp; Z=−842.3</span>
     </div>
   </div>
 
-</div>
+</div><!-- .window -->
 
 <script>
-  // Speed slider live label
-  const spd    = document.getElementById('spd');
-  const spdVal = document.getElementById('spd-val');
-  spd.addEventListener('input', () => {
-    spdVal.textContent = (spd.value / 10).toFixed(1) + '×';
+// ── Toggle cheat buttons ───────────────────────────────────────────────────
+document.querySelectorAll('.cheat-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const active = btn.classList.toggle('active');
+    btn.querySelector('.indicator').textContent = active ? '▶' : '■';
+    addLog(btn.textContent.trim().replace(/^[▶■]\s*/, '') + ': ' + (active ? 'ENABLED' : 'DISABLED'), active ? 'ok' : 'warn');
   });
+});
 
-  // Animate the stat bars to demo live polling
-  const hp  = { fill: document.getElementById('hp-fill'),  val: document.getElementById('hp-val'),  pct: 1.00, max: 5000 };
-  const sta = { fill: document.getElementById('sta-fill'), val: document.getElementById('sta-val'), pct: 0.72, max: 3000 };
-  const spi = { fill: document.getElementById('spi-fill'), val: document.getElementById('spi-val'), pct: 0.86, max: 4500 };
+// ── Speed toggle ───────────────────────────────────────────────────────────
+const speedBtn = document.getElementById('speed-btn');
+const speedInd = document.getElementById('speed-ind');
+speedBtn.addEventListener('click', () => {
+  const active = speedBtn.classList.toggle('active');
+  speedInd.textContent = active ? '▶' : '■';
+  addLog('Speed Multiplier (' + document.getElementById('spd-val').textContent + '): ' + (active ? 'ENABLED' : 'DISABLED'), active ? 'ok' : 'warn');
+});
 
-  function updateBar(b) {
+// ── Speed slider ───────────────────────────────────────────────────────────
+const spd    = document.getElementById('spd');
+const spdVal = document.getElementById('spd-val');
+spd.addEventListener('input', () => {
+  spdVal.textContent = (spd.value / 10).toFixed(1) + '×';
+});
+
+// ── Live stat bar animation ────────────────────────────────────────────────
+const bars = {
+  hp:  { fill: document.getElementById('hp-fill'),  val: document.getElementById('hp-val'),  pct: 1.00, max: 5000, drain: 0 },
+  sta: { fill: document.getElementById('sta-fill'), val: document.getElementById('sta-val'), pct: 0.72, max: 3000, drain: 0.004 },
+  spi: { fill: document.getElementById('spi-fill'), val: document.getElementById('spi-val'), pct: 0.86, max: 4500, drain: 0.003 },
+};
+
+function updateBars() {
+  Object.values(bars).forEach(b => {
+    // HP drains if Infinite Health is off, otherwise stays full
+    if (b === bars.hp) {
+      const healthOn = document.querySelector('[data-idx="0"]').classList.contains('active');
+      b.drain = healthOn ? 0 : 0.002;
+    }
+    b.pct = Math.max(0.03, b.pct - b.drain);
+    if (b.pct <= 0.03) b.pct = 1.0;
     b.fill.style.width = (b.pct * 100).toFixed(1) + '%';
     b.val.textContent  = Math.round(b.pct * b.max).toLocaleString() + ' / ' + b.max.toLocaleString();
-  }
-  [hp, sta, spi].forEach(updateBar);
+  });
 
-  // Slowly drain STA and SPI to show live effect, HP stays full (Infinite Health on)
-  setInterval(() => {
-    sta.pct = Math.max(0.05, sta.pct - 0.003);
-    spi.pct = Math.max(0.05, spi.pct - 0.002);
-    updateBar(sta);
-    updateBar(spi);
-    if (sta.pct <= 0.05) sta.pct = 1.0;
-    if (spi.pct <= 0.05) spi.pct = 1.0;
-  }, 300);
+  // Simulate position drifting when Freeze Position is OFF
+  if (!document.querySelector('[data-idx="4"]').classList.contains('active')) {
+    const t = Date.now() / 800;
+    document.getElementById('live-pos').textContent =
+      'Current:  X=' + (1284.5 + Math.sin(t) * 5).toFixed(1) +
+      '  Y=' + (320.0 + Math.cos(t * 0.7) * 2).toFixed(1) +
+      '  Z=−' + (842.3 + Math.sin(t * 1.3) * 3).toFixed(1);
+  } else {
+    document.getElementById('live-pos').textContent = 'Current:  X=1284.5  Y=320.0  Z=−842.3  [FROZEN]';
+  }
+}
+
+setInterval(updateBars, 300);
+
+// ── Log helper ─────────────────────────────────────────────────────────────
+function addLog(msg, cls = 'info') {
+  const log = document.getElementById('log');
+  const now = new Date();
+  const ts  = String(now.getHours()).padStart(2,'0') + ':' +
+              String(now.getMinutes()).padStart(2,'0') + ':' +
+              String(now.getSeconds()).padStart(2,'0');
+  log.innerHTML += '<br><span class="ts">[' + ts + ']</span> <span class="' + cls + '">' + msg + '</span>';
+  log.scrollTop = log.scrollHeight;
+}
 </script>
 </body>
 </html>
