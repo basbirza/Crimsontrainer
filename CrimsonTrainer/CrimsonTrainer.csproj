@@ -13,4 +13,14 @@
     <RootNamespace>CrimsonTrainer</RootNamespace>
   </PropertyGroup>
 
+
+  <ItemGroup>
+    <EmbeddedResource Include="Fonts\SpaceGrotesk.ttf" />
+    <EmbeddedResource Include="Fonts\Manrope.ttf" />
+    <EmbeddedResource Include="Fonts\EBGaramond.ttf" />
+    <EmbeddedResource Include="Fonts\Cinzel.ttf" />
+    <EmbeddedResource Include="Fonts\JetBrainsMono.ttf" />
+    <EmbeddedResource Include="Fonts\JetBrainsMono-Bold.ttf" />
+  </ItemGroup>
+
 </Project>

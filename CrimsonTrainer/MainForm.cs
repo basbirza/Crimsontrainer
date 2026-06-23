@@ -2,6 +2,7 @@ using System;
 using System.Drawing;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using CrimsonTrainer.Themes;
 
 namespace CrimsonTrainer
 {
@@ -16,19 +17,21 @@ namespace CrimsonTrainer
         private const int HK_NOFALL     = 7;
         private const int HK_SPEED      = 8;
 
-        private static readonly Color ColorInactive = Color.FromArgb(45, 45, 60);
-        private static readonly Color ColorActive   = Color.FromArgb(30, 110, 50);
-
-
         private CheatManager _cheatManager = null!;
         private GlobalHotkey _hotkeys      = null!;
         private System.Windows.Forms.Timer _pollTimer = null!;
+
+        private readonly ThemeManager _theme = new();
 
         public MainForm() => InitializeComponent();
 
         protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
+
+            // Apply default theme (Midnight Forge) before anything else is shown
+            _theme.EnsureFontsLoaded();
+            ApplyTheme(ThemeDefinitions.MidnightForge);
 
             _cheatManager = new CheatManager();
             _cheatManager.AttachStateChanged += OnAttachStateChanged;
@@ -56,6 +59,12 @@ namespace CrimsonTrainer
             btnTeleport.Click       += OnTeleportClicked;
             btnTeleportCustom.Click += OnTeleportCustomClicked;
 
+            // Theme picker
+            btnTheme0.Click += (_, __) => ApplyTheme(ThemeDefinitions.MidnightForge);
+            btnTheme1.Click += (_, __) => ApplyTheme(ThemeDefinitions.Atelier);
+            btnTheme2.Click += (_, __) => ApplyTheme(ThemeDefinitions.Sandsworn);
+            btnTheme3.Click += (_, __) => ApplyTheme(ThemeDefinitions.Override);
+
             _cheatManager.Teleport.PositionChanged += RefreshCoordsLabel;
 
             _pollTimer = new System.Windows.Forms.Timer { Interval = 300 };
@@ -73,6 +82,7 @@ namespace CrimsonTrainer
             _pollTimer?.Stop();
             _hotkeys?.Dispose();
             _cheatManager?.Dispose();
+            _theme.Dispose();
             base.OnFormClosing(e);
         }
 
@@ -82,7 +92,32 @@ namespace CrimsonTrainer
             base.WndProc(ref m);
         }
 
-        // ── Teleport buttons ──────────────────────────────────────────────────
+        // ── Theme switching ───────────────────────────────────────────────────
+
+        private void ApplyTheme(TrainerTheme theme)
+        {
+            _theme.Apply(this, theme);
+            // Re-apply cheat button active states after theme repaint
+            RefreshCheatButtons();
+            // Highlight the active theme button
+            HighlightThemeButton(theme);
+        }
+
+        private void HighlightThemeButton(TrainerTheme theme)
+        {
+            var buttons = new[] { btnTheme0, btnTheme1, btnTheme2, btnTheme3 };
+            var themes  = ThemeDefinitions.All;
+            for (int i = 0; i < buttons.Length && i < themes.Length; i++)
+            {
+                bool sel = themes[i].Name == theme.Name;
+                buttons[i].FlatAppearance.BorderColor = sel
+                    ? theme.HeaderTitle
+                    : theme.FindBtnBorder;
+                buttons[i].FlatAppearance.BorderSize = sel ? 2 : 1;
+            }
+        }
+
+        // ── Teleport buttons ─────────────────────────────────────────────────
 
         private void OnSavePosClicked(object? sender, EventArgs e)
         {
@@ -101,16 +136,19 @@ namespace CrimsonTrainer
         private void OnTeleportClicked(object? sender, EventArgs e)
         {
             if (_cheatManager.Teleport.TeleportNow())
-                AppendLog($"Teleported to saved position.");
+                AppendLog("Teleported to saved position.");
             else
                 AppendLog("Cannot teleport: no saved position or entity not found.");
         }
 
         private void OnTeleportCustomClicked(object? sender, EventArgs e)
         {
-            if (!float.TryParse(txtX.Text, System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out float x) ||
-                !float.TryParse(txtY.Text, System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out float y) ||
-                !float.TryParse(txtZ.Text, System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out float z))
+            if (!float.TryParse(txtX.Text, System.Globalization.NumberStyles.Float,
+                    System.Globalization.CultureInfo.InvariantCulture, out float x) ||
+                !float.TryParse(txtY.Text, System.Globalization.NumberStyles.Float,
+                    System.Globalization.CultureInfo.InvariantCulture, out float y) ||
+                !float.TryParse(txtZ.Text, System.Globalization.NumberStyles.Float,
+                    System.Globalization.CultureInfo.InvariantCulture, out float z))
             {
                 AppendLog("Invalid coordinates. Use decimal numbers (e.g. 1234.5).");
                 return;
@@ -199,7 +237,7 @@ namespace CrimsonTrainer
 
             lblStatus.Text      = attached ? "● ATTACHED" : "● NOT ATTACHED";
             lblStatus.ForeColor = attached
-                ? Color.FromArgb(50, 200, 80)
+                ? _theme.Current.StatusGreen
                 : Color.FromArgb(200, 80, 80);
 
             if (!attached) RefreshCheatButtons();
@@ -212,7 +250,7 @@ namespace CrimsonTrainer
             if (found)
             {
                 lblEntityStatus.Text      = $"Entity: FOUND  0x{_cheatManager.EntityBase.ToInt64():X}";
-                lblEntityStatus.ForeColor = Color.FromArgb(50, 200, 80);
+                lblEntityStatus.ForeColor = _theme.Current.StatusGreen;
             }
             else
             {
@@ -240,7 +278,6 @@ namespace CrimsonTrainer
 
         private void UpdateLiveStats()
         {
-            // ── Stat bars ──────────────────────────────────────────────────────
             var (curHp, maxHp, curSta, maxSta, curSpi, maxSpi) = _cheatManager.ReadStats();
 
             bool hasData = maxHp > 0 && maxSta > 0 && maxSpi > 0;
@@ -249,7 +286,6 @@ namespace CrimsonTrainer
             UpdateStatBar(pnlStaFill, lblStaVal, curSta, maxSta, hasData);
             UpdateStatBar(pnlSpiFill, lblSpiVal, curSpi, maxSpi, hasData);
 
-            // ── Live coordinates ───────────────────────────────────────────────
             if (_cheatManager.EntityBase != IntPtr.Zero)
             {
                 var (x, y, z) = _cheatManager.Teleport.ReadCurrentPosition();
@@ -272,11 +308,9 @@ namespace CrimsonTrainer
                 return;
             }
 
-            // current is scaled ×100, max is scaled ×10 → full pool = max × 10
             double pct = Math.Clamp(current / (max * 10.0), 0.0, 1.0);
             fill.Width = (int)(StatBarMaxWidth * pct);
 
-            // Display in human-readable units (÷100 for current, ÷10 for max)
             long dispCur = current / 100;
             long dispMax = max    / 10;
             val.Text = $"{dispCur:N0} / {dispMax:N0}";
@@ -286,16 +320,17 @@ namespace CrimsonTrainer
 
         private void OnSpeedSliderChanged(object? sender, EventArgs e)
         {
-            float mult = trkSpeed.Value / 10f;          // 2–50 ticks → 0.2–5.0×
+            float mult = trkSpeed.Value / 10f;
             _cheatManager.SpeedMultiplier.Multiplier = mult;
             lblSpeedValue.Text = $"{mult:F1}×";
         }
 
-        private static void ApplyButtonState(Button btn, bool active)
+        private void ApplyButtonState(Button btn, bool active)
         {
-            btn.BackColor = active ? ColorActive : ColorInactive;
+            _theme.ApplyCheatButton(btn, _theme.Current, active);
+            // Preserve the ▶/■ prefix convention
             string raw = btn.Text.TrimStart('▶', '■', ' ');
-            btn.Text   = active ? $"▶ {raw}" : $"■ {raw}";
+            btn.Text = active ? $"▶ {raw}" : $"■ {raw}";
         }
 
         // ── Log ───────────────────────────────────────────────────────────────
