@@ -57,10 +57,10 @@
   .ind { font-size: 9px; flex-shrink: 0; }
   .hk { font-size: 11px; min-width: 28px; text-align: right; }
   .speed-row { display: flex; align-items: center; gap: 10px; margin-top: 3px; }
-  .speed-btn { display: flex; align-items: center; gap: 9px; padding: 9px 12px; font-size: 12.5px; font-weight: 600; border-radius: 4px; cursor: pointer; user-select: none; width: 188px; flex-shrink: 0; transition: background .12s, border-color .12s, box-shadow .12s, color .12s; }
-  .speed-slider { flex: 1; -webkit-appearance: none; appearance: none; height: 3px; border-radius: 2px; outline: none; cursor: pointer; }
+  .speed-btn { display: flex; align-items: center; gap: 9px; padding: 9px 12px; font-size: 12.5px; font-weight: 600; border-radius: 4px; cursor: pointer; user-select: none; width: 172px; flex-shrink: 0; transition: background .12s, border-color .12s, box-shadow .12s, color .12s; }
+  .speed-slider { flex: 1; min-width: 0; -webkit-appearance: none; appearance: none; height: 3px; border-radius: 2px; outline: none; cursor: pointer; }
   .speed-slider::-webkit-slider-thumb { -webkit-appearance: none; width: 13px; height: 13px; border-radius: 50%; cursor: pointer; box-shadow: 0 1px 4px rgba(0,0,0,.5); }
-  .speed-val { font-size: 12px; font-weight: 700; min-width: 36px; text-align: right; }
+  .speed-val { font-size: 12px; font-weight: 700; width: 36px; flex-shrink: 0; text-align: right; }
   .speed-hk { font-size: 11px; min-width: 28px; text-align: right; }
   .tp { padding: 10px 12px; }
   .live-pos { font-size: 10px; margin-bottom: 10px; letter-spacing: .3px; }
@@ -239,7 +239,7 @@
   .dir-sandsworn .log { background: #0c0806; border: 1px solid #2a1d16; color: #c9a24b; }
   .dir-sandsworn .log .ok { color: #c9a24b; } .dir-sandsworn .log .info { color: #8a7a5a; } .dir-sandsworn .log .warn { color: #e0884a; } .dir-sandsworn .log .ts { color: #4a3a28; }
   .dir-sandsworn .theme-bar { background: #160f0d; border-bottom: 1px solid #2a1d16; }
-  .dir-sandsworn .tpick-btn { background: #1f1611; color: #6a543a; border-color: #43301f; font-family: 'Cinzel', serif; font-size: 9px; }
+  .dir-sandsworn .tpick-btn { background: #1f1611; color: #6a543a; border-color: #43301f; font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: .3px; }
   .dir-sandsworn .tpick-btn:hover { background: #271c15; color: #cbb389; }
   .dir-sandsworn .tpick-btn.active { background: #3a160f; color: #f0d2a0; border-color: #c9a24b; }
 
@@ -348,7 +348,7 @@ const WINDOW_HTML = `
     <div class="crow"><button class="cheat-btn" data-idx="5"><span class="ind"></span><span>One-Hit Kill</span></button><span class="hk">F6</span></div>
     <div class="crow"><button class="cheat-btn" data-idx="6"><span class="ind"></span><span>No Fall Damage</span></button><span class="hk">F7</span></div>
     <div class="divider"><span>Movement</span></div>
-    <div class="speed-row"><button class="speed-btn"><span class="ind"></span><span>Speed Multiplier</span></button><input type="range" class="speed-slider" min="2" max="50" value="20"><span class="speed-val">2.0&times;</span><span class="speed-hk">F8</span></div>
+    <div class="speed-row"><button class="speed-btn"><span class="ind"></span><span>Speed Multiplier</span></button><input type="range" class="speed-slider" min="2" max="50" value="20"><span class="speed-val">2.0&times;</span><span class="hk">F8</span></div>
   </div>
   <div class="sect">Teleport</div>
   <div class="tp">
@@ -459,18 +459,19 @@ function initTrainer(win, d) {
   });
   slider.addEventListener('input', () => { sval.textContent = (slider.value / 10).toFixed(1) + '\u00D7'; });
 
-  // in-window theme picker buttons
+  // set correct active tpick on initial render
+  win.querySelectorAll('.tpick-btn').forEach(b => b.classList.toggle('active', b.dataset.pick === d.id));
+
+  // in-window theme picker buttons \u2014 swap CSS class without rebuilding the DOM
   win.querySelectorAll('.tpick-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       const pick = btn.dataset.pick;
-      // switch the outer dir-* class
       DIRECTIONS.forEach(dir => win.classList.remove('dir-' + dir.id));
       win.classList.add('dir-' + pick);
-      // update active state on tpick buttons
       win.querySelectorAll('.tpick-btn').forEach(b => b.classList.toggle('active', b.dataset.pick === pick));
-      // also switch the outer switcher highlight
-      const found = DIRECTIONS.find(dd => dd.id === pick); if (found) selectTheme(found);
-      addLog('Theme changed \u2192 ' + btn.textContent, 'info');
+      switcher.querySelectorAll('.theme-btn').forEach(b => b.classList.toggle('sel', b.dataset.id === pick));
+      localStorage.setItem('cdt-theme', pick);
+      addLog('Theme \u2192 ' + btn.textContent.trim(), 'info');
     });
   });
 
