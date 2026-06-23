@@ -57,6 +57,9 @@ namespace CrimsonTrainer
             btnFindEntity.Click     += OnFindEntityClicked;
             btnTeleportCustom.Click += OnTeleportCustomClicked;
 
+            btnSetGold.Click     += OnSetGoldClicked;
+            btnSetGoldAddr.Click += OnSetGoldAddrClicked;
+
             // Teleport slot buttons
             btnSaveSlotA.Click += (_, __) => OnSaveSlot(0, txtSlotNameA, lblSlotCoordsA);
             btnSaveSlotB.Click += (_, __) => OnSaveSlot(1, txtSlotNameB, lblSlotCoordsB);
@@ -154,6 +157,45 @@ namespace CrimsonTrainer
             {
                 AppendLog("Cannot teleport: slot empty or entity not found.");
             }
+        }
+
+        private void OnSetGoldClicked(object? sender, EventArgs e)
+        {
+            if (!long.TryParse(txtGoldAmount.Text.Replace(",", "").Trim(),
+                    out long amount) || amount < 0)
+            {
+                AppendLog("Invalid amount. Enter a whole number e.g. 1000000");
+                return;
+            }
+            if (!_cheatManager.GoldEditor.IsAddressSet)
+            {
+                AppendLog("No CE address set. Paste your Cheat Engine silver address first.");
+                return;
+            }
+            if (_cheatManager.GoldEditor.WriteGold(amount))
+                AppendLog($"Silver set to {amount:N0}");
+            else
+                AppendLog("Cannot set silver: not attached or address invalid.");
+        }
+
+        private void OnSetGoldAddrClicked(object? sender, EventArgs e)
+        {
+            if (_cheatManager.GoldEditor.SetAddressHex(txtGoldAddr.Text))
+            {
+                AppendLog($"Silver address set to 0x{_cheatManager.GoldEditor.GoldAddress.ToInt64():X}");
+                RefreshGoldLive();
+            }
+            else
+            {
+                AppendLog("Invalid hex address. Example: 7FF812A4C8B0");
+            }
+        }
+
+        private void RefreshGoldLive()
+        {
+            if (InvokeRequired) { Invoke(RefreshGoldLive); return; }
+            long v = _cheatManager.GoldEditor.ReadGold();
+            lblGoldLive.Text = v >= 0 ? $"Silver: {v:N0}" : "Silver: -- (set CE address below)";
         }
 
         private void OnTeleportCustomClicked(object? sender, EventArgs e)
@@ -307,6 +349,8 @@ namespace CrimsonTrainer
             {
                 lblLiveCoords.Text = "Current: --";
             }
+
+            RefreshGoldLive();
         }
 
         private static void UpdateStatBar(

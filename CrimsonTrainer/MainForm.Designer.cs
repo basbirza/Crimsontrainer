@@ -75,6 +75,15 @@ namespace CrimsonTrainer
         private System.Windows.Forms.Label    lblYLabel;
         private System.Windows.Forms.Label    lblZLabel;
         private System.Windows.Forms.Button   btnTeleportCustom;
+        // ── Gold editor ───────────────────────────────────────────────────────
+        private System.Windows.Forms.Panel    pnlGold;
+        private System.Windows.Forms.Label    lblDividerCurrency;
+        private System.Windows.Forms.Label    lblGoldLive;
+        private System.Windows.Forms.TextBox  txtGoldAmount;
+        private System.Windows.Forms.Button   btnSetGold;
+        private System.Windows.Forms.Label    lblGoldAddrHint;
+        private System.Windows.Forms.TextBox  txtGoldAddr;
+        private System.Windows.Forms.Button   btnSetGoldAddr;
         // ── Log ──────────────────────────────────────────────────────────────
         private System.Windows.Forms.GroupBox grpLog;
         private System.Windows.Forms.RichTextBox rtbLog;
@@ -152,6 +161,14 @@ namespace CrimsonTrainer
             this.lblYLabel           = new System.Windows.Forms.Label();
             this.lblZLabel           = new System.Windows.Forms.Label();
             this.btnTeleportCustom   = new System.Windows.Forms.Button();
+            this.pnlGold          = new System.Windows.Forms.Panel();
+            this.lblDividerCurrency = new System.Windows.Forms.Label();
+            this.lblGoldLive      = new System.Windows.Forms.Label();
+            this.txtGoldAmount    = new System.Windows.Forms.TextBox();
+            this.btnSetGold       = new System.Windows.Forms.Button();
+            this.lblGoldAddrHint  = new System.Windows.Forms.Label();
+            this.txtGoldAddr      = new System.Windows.Forms.TextBox();
+            this.btnSetGoldAddr   = new System.Windows.Forms.Button();
             this.grpLog              = new System.Windows.Forms.GroupBox();
             this.rtbLog              = new System.Windows.Forms.RichTextBox();
 
@@ -450,6 +467,85 @@ namespace CrimsonTrainer
                 this.lblZLabel, this.txtZ, this.btnTeleportCustom
             });
 
+            // ── Gold editor panel ─────────────────────────────────────────────────
+            this.pnlGold.Tag       = ThemeManager.TAG_TELEPORT;
+            this.pnlGold.Dock      = System.Windows.Forms.DockStyle.Top;
+            this.pnlGold.Height    = 88;
+            this.pnlGold.BackColor = System.Drawing.Color.FromArgb(28, 28, 42);
+
+            this.lblDividerCurrency.Tag       = ThemeManager.TAG_DIVIDER;
+            this.lblDividerCurrency.Text      = "────────────  CURRENCY  ────────────";
+            this.lblDividerCurrency.ForeColor = System.Drawing.Color.FromArgb(80, 80, 100);
+            this.lblDividerCurrency.Font      = new System.Drawing.Font("Segoe UI", 7.5f);
+            this.lblDividerCurrency.AutoSize  = false;
+            this.lblDividerCurrency.Size      = new System.Drawing.Size(390, 14);
+            this.lblDividerCurrency.Location  = new System.Drawing.Point(10, 2);
+            this.lblDividerCurrency.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+
+            this.lblGoldLive.Tag       = ThemeManager.TAG_LIVE_POS;
+            this.lblGoldLive.Text      = "Silver: --";
+            this.lblGoldLive.ForeColor = System.Drawing.Color.FromArgb(100, 170, 100);
+            this.lblGoldLive.Font      = new System.Drawing.Font("Consolas", 8.5f);
+            this.lblGoldLive.AutoSize  = true;
+            this.lblGoldLive.Location  = new System.Drawing.Point(10, 20);
+
+            this.txtGoldAmount.Tag         = ThemeManager.TAG_COORD_INPUT;
+            this.txtGoldAmount.Location    = new System.Drawing.Point(10, 40);
+            this.txtGoldAmount.Size        = new System.Drawing.Size(200, 22);
+            this.txtGoldAmount.BackColor   = System.Drawing.Color.FromArgb(40, 40, 55);
+            this.txtGoldAmount.ForeColor   = System.Drawing.Color.White;
+            this.txtGoldAmount.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtGoldAmount.Font        = new System.Drawing.Font("Consolas", 9f);
+            this.txtGoldAmount.Text        = "1000000";
+
+            this.btnSetGold.Tag       = ThemeManager.TAG_TP_BTN;
+            this.btnSetGold.Text      = "Set Silver";
+            this.btnSetGold.Location  = new System.Drawing.Point(218, 40);
+            this.btnSetGold.Size      = new System.Drawing.Size(90, 22);
+            this.btnSetGold.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnSetGold.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(80, 80, 140);
+            this.btnSetGold.BackColor = System.Drawing.Color.FromArgb(35, 35, 80);
+            this.btnSetGold.ForeColor = System.Drawing.Color.White;
+            this.btnSetGold.Font      = new System.Drawing.Font("Segoe UI", 8f, System.Drawing.FontStyle.Bold);
+            this.btnSetGold.Cursor    = System.Windows.Forms.Cursors.Hand;
+
+            this.lblGoldAddrHint.Tag       = ThemeManager.TAG_COORD_LABEL;
+            this.lblGoldAddrHint.Text      = "CE Addr:";
+            this.lblGoldAddrHint.AutoSize  = true;
+            this.lblGoldAddrHint.ForeColor = System.Drawing.Color.FromArgb(100, 100, 120);
+            this.lblGoldAddrHint.Font      = new System.Drawing.Font("Segoe UI", 7.5f);
+            this.lblGoldAddrHint.Location  = new System.Drawing.Point(10, 66);
+
+            this.txtGoldAddr.Tag         = ThemeManager.TAG_COORD_INPUT;
+            this.txtGoldAddr.Location    = new System.Drawing.Point(62, 63);
+            this.txtGoldAddr.Size        = new System.Drawing.Size(170, 20);
+            this.txtGoldAddr.BackColor   = System.Drawing.Color.FromArgb(30, 30, 45);
+            this.txtGoldAddr.ForeColor   = System.Drawing.Color.FromArgb(140, 140, 160);
+            this.txtGoldAddr.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtGoldAddr.Font        = new System.Drawing.Font("Consolas", 8f);
+            this.txtGoldAddr.Text        = "paste CE address";
+
+            this.btnSetGoldAddr.Tag       = ThemeManager.TAG_SAVE_BTN;
+            this.btnSetGoldAddr.Text      = "Set Addr";
+            this.btnSetGoldAddr.Location  = new System.Drawing.Point(238, 62);
+            this.btnSetGoldAddr.Size      = new System.Drawing.Size(70, 22);
+            this.btnSetGoldAddr.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnSetGoldAddr.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(80, 120, 80);
+            this.btnSetGoldAddr.BackColor = System.Drawing.Color.FromArgb(35, 65, 35);
+            this.btnSetGoldAddr.ForeColor = System.Drawing.Color.White;
+            this.btnSetGoldAddr.Font      = new System.Drawing.Font("Segoe UI", 8f, System.Drawing.FontStyle.Bold);
+            this.btnSetGoldAddr.Cursor    = System.Windows.Forms.Cursors.Hand;
+
+            this.pnlGold.Controls.AddRange(new System.Windows.Forms.Control[] {
+                this.lblDividerCurrency,
+                this.lblGoldLive,
+                this.txtGoldAmount,
+                this.btnSetGold,
+                this.lblGoldAddrHint,
+                this.txtGoldAddr,
+                this.btnSetGoldAddr,
+            });
+
             // ── Log group ────────────────────────────────────────────────────
             this.grpLog.Tag       = ThemeManager.TAG_LOG_PANEL;
             this.grpLog.Text      = "Log";
@@ -472,8 +568,8 @@ namespace CrimsonTrainer
             this.Text            = "Crimson Desert Trainer";
             this.BackColor       = System.Drawing.Color.FromArgb(30, 30, 40);
             this.ForeColor       = System.Drawing.Color.White;
-            this.Size            = new System.Drawing.Size(420, 992);
-            this.MinimumSize     = new System.Drawing.Size(420, 874);
+            this.Size            = new System.Drawing.Size(420, 1080);
+            this.MinimumSize     = new System.Drawing.Size(420, 960);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox     = false;
             this.StartPosition   = System.Windows.Forms.FormStartPosition.CenterScreen;
@@ -481,6 +577,7 @@ namespace CrimsonTrainer
 
             // Controls are added bottom-up because DockStyle.Top stacks from the top.
             this.Controls.Add(this.grpLog);
+            this.Controls.Add(this.pnlGold);
             this.Controls.Add(this.pnlTeleport);
             this.Controls.Add(this.pnlSpeed);
             this.Controls.Add(this.pnlCheats);

@@ -31,6 +31,7 @@ namespace CrimsonTrainer
         public IReadOnlyList<ICheat>  Cheats          { get; }
         public Cheats.Teleport         Teleport        { get; private set; } = null!;
         public Cheats.SpeedMultiplier  SpeedMultiplier { get; private set; } = null!;
+        public GoldEditor              GoldEditor      { get; private set; } = null!;
 
         // ── Events ───────────────────────────────────────────────────────────
         public event Action<bool>?   AttachStateChanged;
@@ -50,6 +51,7 @@ namespace CrimsonTrainer
 
             Teleport        = new Cheats.Teleport(_mem, this);
             SpeedMultiplier = new Cheats.SpeedMultiplier(_mem, this);
+            GoldEditor      = new GoldEditor(_mem);
 
             Cheats = new List<ICheat>
             {

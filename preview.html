@@ -78,6 +78,16 @@
   .coords label { font-size: 11px; }
   .coords input { width: 70px; padding: 5px 6px; font-size: 11px; border-radius: 3px; outline: none; border: 1px solid transparent; }
   .go-btn { padding: 5px 11px; font-size: 11.5px; font-weight: 700; border-radius: 3px; cursor: pointer; margin-left: 2px; }
+  .currency { padding: 6px 12px 10px; }
+  .gold-live { font-size: 10px; margin-bottom: 7px; letter-spacing: .3px; font-family: var(--mono, 'JetBrains Mono', monospace); }
+  .gold-hint { font-size: 9px; opacity: .55; }
+  .gold-row { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+  .gold-amt { flex: 1; padding: 4px 7px; font-size: 11px; border-radius: 3px; outline: none; border: 1px solid transparent; font-family: var(--mono, 'JetBrains Mono', monospace); }
+  .gold-set-btn { padding: 4px 12px; font-size: 11px; font-weight: 700; border-radius: 3px; cursor: pointer; white-space: nowrap; }
+  .gold-addr-row { display: flex; align-items: center; gap: 6px; }
+  .gold-addr-label { font-size: 9.5px; white-space: nowrap; }
+  .gold-addr-input { flex: 1; padding: 3px 6px; font-size: 10px; border-radius: 3px; outline: none; border: 1px solid transparent; font-family: var(--mono, 'JetBrains Mono', monospace); }
+  .gold-addr-btn { padding: 3px 8px; font-size: 10px; font-weight: 600; border-radius: 3px; cursor: pointer; white-space: nowrap; }
   .log-wrap { padding: 8px 12px 13px; }
   .log-title { font-size: 9.5px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 6px; }
   .log { height: 120px; overflow-y: auto; font-size: 10.5px; line-height: 1.6; padding: 9px; border-radius: 4px; }
@@ -142,6 +152,16 @@
   .dir-forge .tpick-btn { background: #1c1d27; color: #6a6c80; border-color: #34364a; }
   .dir-forge .tpick-btn:hover { background: #23252f; color: #c4c6d4; }
   .dir-forge .tpick-btn.active { background: #2c1418; color: #fff; border-color: #e0383c; }
+  .dir-forge .currency { background: #14151d; border-bottom: 1px solid #24262f; }
+  .dir-forge .gold-live { color: #c9a24b; }
+  .dir-forge .gold-amt { background: #1a1c28; color: #cfd2e0; border-color: #34364a; }
+  .dir-forge .gold-amt:focus { border-color: #c9a24b; }
+  .dir-forge .gold-set-btn { background: #2a1f10; color: #e0c060; border: 1px solid #c9a24b; }
+  .dir-forge .gold-set-btn:hover { background: #3a2a15; }
+  .dir-forge .gold-addr-label { color: #5a5c70; }
+  .dir-forge .gold-addr-input { background: #1a1c28; color: #7a7c90; border-color: #2a2c3a; }
+  .dir-forge .gold-addr-btn { background: #1c1d27; color: #6a6c80; border: 1px solid #34364a; }
+  .dir-forge .gold-addr-btn:hover { background: #23252f; color: #c4c6d4; }
 
   /* ════════════════════════════════════════════════════════════════════ */
   /*  02 · ATELIER — sleek modern / light                                   */
@@ -199,6 +219,16 @@
   .dir-atelier .tpick-btn { background: #f6f6f9; color: #9a9aa6; border-color: #ededf2; border-radius: 8px; }
   .dir-atelier .tpick-btn:hover { background: #ededf2; color: #3a3b45; }
   .dir-atelier .tpick-btn.active { background: #e6f7ef; color: #0c6b46; border-color: #12a06a; }
+  .dir-atelier .currency { background: #fafafb; border-top: 1px solid #eeeef2; }
+  .dir-atelier .gold-live { color: #b07c10; }
+  .dir-atelier .gold-amt { background: #fff; color: #3a3b45; border-color: #e2e2ea; }
+  .dir-atelier .gold-amt:focus { border-color: #c08a1e; }
+  .dir-atelier .gold-set-btn { background: #fef3e0; color: #8a5c10; border: 1px solid #e8c070; border-radius: 9px; }
+  .dir-atelier .gold-set-btn:hover { background: #fde8b8; }
+  .dir-atelier .gold-addr-label { color: #9a9aa6; font-weight: 600; }
+  .dir-atelier .gold-addr-input { background: #f6f6f9; color: #9a9aa6; border-color: #ededf2; }
+  .dir-atelier .gold-addr-btn { background: #f6f6f9; color: #9a9aa6; border: 1px solid #ededf2; border-radius: 6px; }
+  .dir-atelier .gold-addr-btn:hover { background: #ededf2; color: #3a3b45; }
 
   /* ════════════════════════════════════════════════════════════════════ */
   /*  03 · SANDSWORN — Crimson Desert lore / ornate gold                    */
@@ -258,6 +288,16 @@
   .dir-sandsworn .tpick-btn { background: #1f1611; color: #6a543a; border-color: #43301f; font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: .3px; }
   .dir-sandsworn .tpick-btn:hover { background: #271c15; color: #cbb389; }
   .dir-sandsworn .tpick-btn.active { background: #3a160f; color: #f0d2a0; border-color: #c9a24b; }
+  .dir-sandsworn .currency { background: #160f0d; border-bottom: 1px solid #2a1d16; }
+  .dir-sandsworn .gold-live { color: #c9a24b; font-family: 'JetBrains Mono', monospace; }
+  .dir-sandsworn .gold-amt { background: #1a120e; color: #d8c2a0; border-color: #43301f; font-family: 'JetBrains Mono', monospace; }
+  .dir-sandsworn .gold-amt:focus { border-color: #c9a24b; }
+  .dir-sandsworn .gold-set-btn { background: #2a1f0e; color: #e0c060; border: 1px solid #c9a24b; font-family: 'JetBrains Mono', monospace; font-size: 10px; }
+  .dir-sandsworn .gold-set-btn:hover { background: #38280e; }
+  .dir-sandsworn .gold-addr-label { color: #7a6040; font-family: 'JetBrains Mono', monospace; }
+  .dir-sandsworn .gold-addr-input { background: #150e0b; color: #7a6040; border-color: #33220f; font-family: 'JetBrains Mono', monospace; }
+  .dir-sandsworn .gold-addr-btn { background: #1f1611; color: #6a543a; border: 1px solid #43301f; font-family: 'JetBrains Mono', monospace; font-size: 9px; }
+  .dir-sandsworn .gold-addr-btn:hover { background: #271c15; color: #cbb389; }
 
   /* ════════════════════════════════════════════════════════════════════ */
   /*  04 · OVERRIDE — cyberpunk hacker terminal                             */
@@ -320,6 +360,16 @@
   .dir-override .tpick-btn { background: #0c0f11; color: #2a6a66; border-color: #173433; border-radius: 2px; }
   .dir-override .tpick-btn:hover { background: #0f1517; color: #8ad6cf; border-color: #235755; }
   .dir-override .tpick-btn.active { background: rgba(46,230,214,.12); color: #2ee6d6; border-color: #2ee6d6; box-shadow: 0 0 8px rgba(46,230,214,.2); }
+  .dir-override .currency { background: #0a0c0e; border-bottom: 1px solid #11201f; }
+  .dir-override .gold-live { color: #ffd700; }
+  .dir-override .gold-amt { background: #0c0f11; color: #8ad6cf; border-color: #173433; }
+  .dir-override .gold-amt:focus { border-color: #ffd700; }
+  .dir-override .gold-set-btn { background: rgba(255,215,0,.1); color: #ffd700; border: 1px solid rgba(255,215,0,.4); border-radius: 2px; }
+  .dir-override .gold-set-btn:hover { background: rgba(255,215,0,.2); }
+  .dir-override .gold-addr-label { color: #2ee6d6; }
+  .dir-override .gold-addr-input { background: #0c0f11; color: #2a6a66; border-color: #173433; }
+  .dir-override .gold-addr-btn { background: transparent; color: #2ee6d6; border: 1px solid #2ee6d6; border-radius: 2px; }
+  .dir-override .gold-addr-btn:hover { background: rgba(46,230,214,.08); }
 </style>
 </head>
 <body>
@@ -396,6 +446,19 @@ const WINDOW_HTML = `
       <span class="slot-coords">--</span>
     </div>
     <div class="coords"><label>X</label><input value="1284.50"><label>Y</label><input value="320.00"><label>Z</label><input value="-842.30"><button class="go-btn">Go</button></div>
+  </div>
+  <div class="sect">Currency</div>
+  <div class="currency">
+    <div class="gold-live">Silver: -- <span class="gold-hint">(set CE address below)</span></div>
+    <div class="gold-row">
+      <input class="gold-amt" value="1000000" placeholder="amount">
+      <button class="gold-set-btn">Set Silver</button>
+    </div>
+    <div class="gold-addr-row">
+      <span class="gold-addr-label">CE Addr:</span>
+      <input class="gold-addr-input" placeholder="paste CE address">
+      <button class="gold-addr-btn">Set Addr</button>
+    </div>
   </div>
   <div class="log-wrap">
     <div class="log-title">Log</div>
@@ -576,6 +639,36 @@ function initTrainer(win, d) {
   win.querySelector('.go-btn').addEventListener('click', () => {
     const v = win.querySelectorAll('.coords input');
     addLog('Teleport \u2192 X=' + v[0].value + ' Y=' + v[1].value + ' Z=' + v[2].value, 'ok');
+  });
+
+  // Gold editor
+  const goldSetBtn  = win.querySelector('.gold-set-btn');
+  const goldAddrBtn = win.querySelector('.gold-addr-btn');
+  const goldLive    = win.querySelector('.gold-live');
+  const goldHint    = win.querySelector('.gold-hint');
+  let goldAddressSet = false;
+  let simulatedGold  = 1_000_000;
+
+  goldAddrBtn.addEventListener('click', () => {
+    const raw = win.querySelector('.gold-addr-input').value.trim();
+    if (raw && raw !== 'paste CE address' && raw.length > 4) {
+      goldAddressSet = true;
+      goldLive.innerHTML = 'Silver: <span style="color:inherit">' + simulatedGold.toLocaleString() + '</span>';
+      if (goldHint) goldHint.textContent = '';
+      addLog('Silver address set \u2192 0x' + raw.toUpperCase(), 'ok');
+    } else {
+      addLog('Invalid address.', 'warn');
+    }
+  });
+
+  goldSetBtn.addEventListener('click', () => {
+    const raw = win.querySelector('.gold-amt').value.replace(/,/g, '');
+    const amt = parseInt(raw, 10);
+    if (isNaN(amt) || amt < 0) { addLog('Invalid silver amount.', 'warn'); return; }
+    if (!goldAddressSet) { addLog('Set a CE address first.', 'warn'); return; }
+    simulatedGold = amt;
+    goldLive.innerHTML = 'Silver: ' + amt.toLocaleString();
+    addLog('Silver set to ' + amt.toLocaleString(), 'ok');
   });
 
   // live bars
