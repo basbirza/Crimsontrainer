@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Crimson Desert Trainer Preview</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #1a1a2a;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+    padding: 30px 0;
+    font-family: 'Segoe UI', sans-serif;
+  }
+
+  .window {
+    width: 420px;
+    background: #1e1e28;
+    border: 1px solid #444;
+    border-radius: 4px;
+    overflow: hidden;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.7);
+  }
+
+  /* ── Title bar ─────────────────────────────────────────────────────────── */
+  .titlebar {
+    background: #1a1a28;
+    padding: 6px 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid #333;
+  }
+  .titlebar-text { color: #aaa; font-size: 12px; }
+  .titlebar-btns { display: flex; gap: 6px; }
+  .titlebar-btns span { width: 12px; height: 12px; border-radius: 50%; display: inline-block; }
+  .btn-close  { background: #ff5f57; }
+  .btn-min    { background: #ffbd2e; }
+  .btn-max    { background: #28c940; }
+
+  /* ── Header ─────────────────────────────────────────────────────────────── */
+  .header { background: #14141e; padding: 10px 12px; }
+  .header h1 { color: #c83232; font-size: 16px; font-weight: bold; letter-spacing: 1px; }
+  .status { font-size: 12px; margin-top: 4px; }
+  .attached { color: #32c850; }
+
+  /* ── Entity bar ─────────────────────────────────────────────────────────── */
+  .entity-bar {
+    background: #19192a;
+    padding: 10px 12px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border-bottom: 1px solid #2a2a3a;
+  }
+  .btn-find {
+    background: #28284a; color: #fff;
+    border: 1px solid #505080;
+    padding: 6px 12px; font-size: 12px; font-weight: bold;
+    border-radius: 3px; cursor: pointer; white-space: nowrap;
+  }
+  .entity-status { font-size: 12px; color: #32c850; }
+
+  /* ── Live stat bars ─────────────────────────────────────────────────────── */
+  .stats-panel {
+    background: #12121c;
+    padding: 8px 10px 10px;
+    border-bottom: 1px solid #2a2a3a;
+  }
+  .stat-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 6px;
+  }
+  .stat-row:last-child { margin-bottom: 0; }
+  .stat-label {
+    font-family: 'Consolas', monospace;
+    font-size: 11px;
+    color: #aaa;
+    width: 28px;
+    flex-shrink: 0;
+  }
+  .bar-outer {
+    flex: 1;
+    height: 7px;
+    background: #282838;
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .bar-fill {
+    height: 100%;
+    border-radius: 2px;
+    transition: width 0.3s ease;
+  }
+  .bar-hp   { background: #28c850; width: 100%; }
+  .bar-sta  { background: #2888c8; width: 72%; }
+  .bar-spi  { background: #a028d8; width: 86%; }
+  .stat-val {
+    font-family: 'Consolas', monospace;
+    font-size: 10px;
+    color: #aaa;
+    width: 100px;
+    flex-shrink: 0;
+    text-align: right;
+  }
+
+  /* ── Cheats ─────────────────────────────────────────────────────────────── */
+  .cheats {
+    background: #1e1e28;
+    padding: 10px;
+    border-bottom: 1px solid #2a2a3a;
+  }
+  .section-divider {
+    text-align: center;
+    color: #505068;
+    font-size: 10px;
+    letter-spacing: 2px;
+    padding: 5px 0 3px;
+  }
+  .cheat-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 6px;
+    gap: 10px;
+  }
+  .cheat-row:last-child { margin-bottom: 0; }
+  .cheat-btn {
+    flex: 1;
+    background: #2d2d3c; color: #fff;
+    border: 1px solid #505064;
+    padding: 8px 12px; font-size: 13px; font-weight: bold;
+    text-align: left; border-radius: 3px; cursor: pointer;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .cheat-btn.active   { background: #1e6e32; border-color: #28a84a; }
+  .cheat-btn .indicator { font-size: 10px; color: #888; }
+  .cheat-btn.active .indicator { color: #80ff80; }
+  .hotkey { color: #8888b4; font-size: 12px; min-width: 32px; text-align: right; }
+
+  /* ── Speed panel ─────────────────────────────────────────────────────────── */
+  .speed-panel {
+    background: #19192a;
+    padding: 10px 12px;
+    border-bottom: 1px solid #2a2a3a;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .speed-btn {
+    background: #2d2d3c; color: #fff;
+    border: 1px solid #505064;
+    padding: 8px 12px; font-size: 12px; font-weight: bold;
+    border-radius: 3px; cursor: pointer;
+    white-space: nowrap; min-width: 158px;
+  }
+  .speed-btn.active { background: #1e6e32; border-color: #28a84a; }
+  .speed-track {
+    flex: 1;
+    -webkit-appearance: none;
+    height: 4px; background: #484860; border-radius: 2px; outline: none;
+  }
+  .speed-track::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 14px; height: 14px;
+    border-radius: 50%; background: #8080c8; cursor: pointer;
+  }
+  .speed-val {
+    color: #80c8ff; font-family: 'Consolas', monospace; font-size: 12px;
+    font-weight: bold; min-width: 34px; text-align: right;
+  }
+  .speed-hk { color: #8888b4; font-size: 12px; }
+
+  /* ── Teleport ─────────────────────────────────────────────────────────────── */
+  .teleport {
+    background: #1c1c2a;
+    padding: 10px 12px;
+    border-bottom: 1px solid #2a2a3a;
+  }
+  .live-coords {
+    font-family: 'Consolas', monospace;
+    font-size: 10.5px;
+    color: #64a864;
+    margin-bottom: 10px;
+  }
+  .teleport-title {
+    color: #8888b4; font-size: 11px; font-weight: bold;
+    letter-spacing: 1px; text-transform: uppercase; margin-bottom: 8px;
+  }
+  .tp-row1 { display: flex; gap: 10px; margin-bottom: 8px; }
+  .btn-savepos {
+    background: #234523; color: #fff; border: 1px solid #507850;
+    padding: 7px 12px; font-size: 12px; font-weight: bold;
+    border-radius: 3px; cursor: pointer; flex: 1;
+  }
+  .btn-tp {
+    background: #232354; color: #fff; border: 1px solid #505090;
+    padding: 7px 12px; font-size: 12px; font-weight: bold;
+    border-radius: 3px; cursor: pointer; flex: 1;
+  }
+  .saved-coords { font-size: 11px; color: #80cc80; font-family: 'Consolas', monospace; margin-bottom: 8px; }
+  .tp-row2 { display: flex; align-items: center; gap: 6px; }
+  .tp-row2 label { color: #aaa; font-size: 12px; min-width: 16px; }
+  .tp-row2 input {
+    background: #28283a; color: #fff; border: 1px solid #484860;
+    padding: 4px 6px; font-size: 12px; font-family: 'Consolas', monospace;
+    border-radius: 2px; width: 78px; outline: none;
+  }
+  .btn-go {
+    background: #232354; color: #fff; border: 1px solid #505090;
+    padding: 4px 10px; font-size: 12px; font-weight: bold;
+    border-radius: 3px; cursor: pointer;
+  }
+
+  /* ── Log ─────────────────────────────────────────────────────────────────── */
+  .log-group { padding: 6px 10px; }
+  .log-title { color: #888; font-size: 11px; margin-bottom: 4px; }
+  .log-box {
+    background: #0f0f14; color: #80ff80;
+    font-family: 'Consolas', monospace; font-size: 11px;
+    padding: 8px; height: 120px; overflow-y: auto;
+    border-radius: 2px; line-height: 1.5;
+  }
+</style>
+</head>
+<body>
+<div class="window">
+
+  <!-- Titlebar -->
+  <div class="titlebar">
+    <span class="titlebar-text">Crimson Desert Trainer</span>
+    <div class="titlebar-btns">
+      <span class="btn-close"></span>
+      <span class="btn-min"></span>
+      <span class="btn-max"></span>
+    </div>
+  </div>
+
+  <!-- Header -->
+  <div class="header">
+    <h1>CRIMSON DESERT TRAINER</h1>
+    <div class="status attached">● ATTACHED</div>
+  </div>
+
+  <!-- Entity bar -->
+  <div class="entity-bar">
+    <button class="btn-find">🔍 Find Entity</button>
+    <span class="entity-status">Entity: FOUND &nbsp; 0x7FF812A4C8B0</span>
+  </div>
+
+  <!-- Live stat bars -->
+  <div class="stats-panel">
+    <div class="stat-row">
+      <span class="stat-label">HP</span>
+      <div class="bar-outer"><div class="bar-fill bar-hp" id="hp-fill"></div></div>
+      <span class="stat-val" id="hp-val">5,000 / 5,000</span>
+    </div>
+    <div class="stat-row">
+      <span class="stat-label">STA</span>
+      <div class="bar-outer"><div class="bar-fill bar-sta" id="sta-fill"></div></div>
+      <span class="stat-val" id="sta-val">2,160 / 3,000</span>
+    </div>
+    <div class="stat-row">
+      <span class="stat-label">SPI</span>
+      <div class="bar-outer"><div class="bar-fill bar-spi" id="spi-fill"></div></div>
+      <span class="stat-val" id="spi-val">3,870 / 4,500</span>
+    </div>
+  </div>
+
+  <!-- Cheat buttons -->
+  <div class="cheats">
+    <div class="cheat-row">
+      <button class="cheat-btn active"><span class="indicator">▶</span> Infinite Health</button>
+      <span class="hotkey">[F1]</span>
+    </div>
+    <div class="cheat-row">
+      <button class="cheat-btn active"><span class="indicator">▶</span> Infinite Stamina</button>
+      <span class="hotkey">[F2]</span>
+    </div>
+    <div class="cheat-row">
+      <button class="cheat-btn"><span class="indicator">■</span> Infinite Spirit</button>
+      <span class="hotkey">[F3]</span>
+    </div>
+    <div class="cheat-row">
+      <button class="cheat-btn"><span class="indicator">■</span> God Mode</button>
+      <span class="hotkey">[F4]</span>
+    </div>
+
+    <div class="section-divider">────────────── COMBAT ──────────────</div>
+
+    <div class="cheat-row">
+      <button class="cheat-btn active"><span class="indicator">▶</span> Freeze Position</button>
+      <span class="hotkey">[F5]</span>
+    </div>
+    <div class="cheat-row">
+      <button class="cheat-btn"><span class="indicator">■</span> One-Hit Kill</button>
+      <span class="hotkey">[F6]</span>
+    </div>
+    <div class="cheat-row">
+      <button class="cheat-btn"><span class="indicator">■</span> No Fall Damage</button>
+      <span class="hotkey">[F7]</span>
+    </div>
+  </div>
+
+  <!-- Speed panel -->
+  <div class="speed-panel">
+    <button class="speed-btn">⚡ Speed Multiplier</button>
+    <input type="range" class="speed-track" min="2" max="50" value="20" id="spd">
+    <span class="speed-val" id="spd-val">2.0×</span>
+    <span class="speed-hk">[F8]</span>
+  </div>
+
+  <!-- Teleport -->
+  <div class="teleport">
+    <div class="live-coords">Current:  X=1284.5 &nbsp; Y=320.0 &nbsp; Z=-842.3</div>
+    <div class="teleport-title">Teleport</div>
+    <div class="tp-row1">
+      <button class="btn-savepos">📍 Save Position</button>
+      <button class="btn-tp">🚀 Teleport</button>
+    </div>
+    <div class="saved-coords">Saved: X=1284.5&nbsp;&nbsp;Y=320.0&nbsp;&nbsp;Z=-842.3</div>
+    <div class="tp-row2">
+      <label>X:</label><input value="1284.50">
+      <label>Y:</label><input value="320.00">
+      <label>Z:</label><input value="-842.30">
+      <button class="btn-go">Go</button>
+    </div>
+  </div>
+
+  <!-- Log -->
+  <div class="log-group">
+    <div class="log-title">Log</div>
+    <div class="log-box">
+[13:04:22] Trainer started. Waiting for Crimson Desert...<br>
+[13:04:23] Attached to CrimsonDesert. Click 'Find Entity' to enable cheats.<br>
+[13:04:23] Hotkeys: F1=Health  F2=Stamina  F3=Spirit  F4=GodMode  F5=Freeze  F6=OHK  F7=NoFall  F8=Speed<br>
+[13:04:31] Scanning for player entity...<br>
+[13:04:33] Entity found at 0x7FF812A4C8B0<br>
+[13:04:35] Infinite Health: ENABLED<br>
+[13:04:36] Infinite Stamina: ENABLED<br>
+[13:04:40] Freeze Position: ENABLED<br>
+[13:04:44] Position saved: X=1284.5  Y=320.0  Z=-842.3
+    </div>
+  </div>
+
+</div>
+
+<script>
+  // Speed slider live label
+  const spd    = document.getElementById('spd');
+  const spdVal = document.getElementById('spd-val');
+  spd.addEventListener('input', () => {
+    spdVal.textContent = (spd.value / 10).toFixed(1) + '×';
+  });
+
+  // Animate the stat bars to demo live polling
+  const hp  = { fill: document.getElementById('hp-fill'),  val: document.getElementById('hp-val'),  pct: 1.00, max: 5000 };
+  const sta = { fill: document.getElementById('sta-fill'), val: document.getElementById('sta-val'), pct: 0.72, max: 3000 };
+  const spi = { fill: document.getElementById('spi-fill'), val: document.getElementById('spi-val'), pct: 0.86, max: 4500 };
+
+  function updateBar(b) {
+    b.fill.style.width = (b.pct * 100).toFixed(1) + '%';
+    b.val.textContent  = Math.round(b.pct * b.max).toLocaleString() + ' / ' + b.max.toLocaleString();
+  }
+  [hp, sta, spi].forEach(updateBar);
+
+  // Slowly drain STA and SPI to show live effect, HP stays full (Infinite Health on)
+  setInterval(() => {
+    sta.pct = Math.max(0.05, sta.pct - 0.003);
+    spi.pct = Math.max(0.05, spi.pct - 0.002);
+    updateBar(sta);
+    updateBar(spi);
+    if (sta.pct <= 0.05) sta.pct = 1.0;
+    if (spi.pct <= 0.05) spi.pct = 1.0;
+  }, 300);
+</script>
+</body>
+</html>
